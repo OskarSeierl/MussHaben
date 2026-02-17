@@ -20,7 +20,7 @@ function App() {
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
-        </button>
+        </button> AAAAAAAAAAAAAAAA
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
