@@ -1,27 +1,23 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import {Navigate, Outlet} from 'react-router-dom';
 
 import {useAuth} from "../../hooks/useAuth.ts";
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
+export const ProtectedRoute: React.FC = () => {
+    const {user, loading} = useAuth();
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user, loading } = useAuth();
+    if (loading) {
+        return (
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+                <div>Loading...</div>
+            </div>
+        );
+    }
 
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <div>Loading...</div>
-      </div>
-    );
-  }
+    if (!user) {
+        return <Navigate to="/login" replace/>;
+    }
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <>{children}</>;
+    return <Outlet/>;
 };
 
