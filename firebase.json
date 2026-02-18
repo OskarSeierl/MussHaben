@@ -47,9 +47,6 @@
     "firestore": {
       "port": 8080
     },
-    "hosting": {
-      "port": 5000
-    },
     "ui": {
       "enabled": true
     },
@@ -58,7 +55,7 @@
   "auth": {
     "providers": {
       "googleSignIn": {
-        "oAuthBrandDisplayName": "Willhaben Advanced Search Agent",
+        "oAuthBrandDisplayName": "MussHaben",
         "supportEmail": "oseierl@gmail.com"
       }
     }

@@ -1,9 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ProtectedRoute } from './utils/ProtectedRoute';
-import Login from './pages/Login';
-import Home from './pages/Home';
-import './App.css';
-import {AuthProvider} from "./context/AuthProvider.tsx";
+import { ProtectedRoute } from '../components/guards/ProtectedRoute.tsx';
+import Login from './routes/Login.tsx';
+import Home from './routes/Home.tsx';
+import {AuthProvider} from "../context/AuthProvider.tsx";
 
 function App() {
   return (

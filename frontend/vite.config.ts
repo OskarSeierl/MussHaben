@@ -12,18 +12,18 @@ export default defineConfig({
         enabled: true
       },
       manifest: {
-        name: 'My Firebase PWA',
-        short_name: 'FirePWA',
+        name: 'MussHaben - Willhaben Advanced Search Agent',
+        short_name: 'MussHaben',
         theme_color: '#ffffff',
         icons: [
           {
-            src: '/icon-192x192.png',
+            src: '/icons/icon-192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/icon-512x512.png',
-            sizes: '192x192',
+            src: '/icons/icon-512.png',
+            sizes: '512x512',
             type: 'image/png'
           }
         ]

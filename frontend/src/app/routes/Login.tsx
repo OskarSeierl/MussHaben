@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '../config/firebase';
+import { auth } from '../../config/firebase.ts';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Login.css';
+import '../../styles/Login.css';
 
 const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
