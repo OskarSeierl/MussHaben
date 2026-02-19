@@ -25,4 +25,4 @@ The frontend is deployed on firebase hosting automatically on every push to the 
 
 #### Backend
 
-To deploy the application to firebase run `firebase deploy --only firestore,functions,auth` from the root of the project.
+To deploy the application to firebase run `firebase deploy --only "firestore,functions,auth"` from the root of the project.
