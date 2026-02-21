@@ -18,11 +18,15 @@ export const Navbar: React.FC<Props> = ({showButtons}) => {
                 <Toolbar disableGutters>
 
                     {/* LOGO SECTION */}
-                    <Box sx={{
-                        mr: 2,
-                        mt: 1,
-                        maxWidth: 100,
-                    }}>
+                    <Box
+                        component={Link}
+                        to="/"
+                        sx={{
+                            mr: 2,
+                            mt: 1,
+                            maxWidth: 100,
+                        }}
+                    >
                         <img
                             src={Logo}
                             style={{width: '100%'}}

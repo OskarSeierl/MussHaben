@@ -1,20 +1,27 @@
 import React from 'react';
-import {Box, Skeleton, Stack} from "@mui/material";
+import {Box, Skeleton, Stack, Typography} from "@mui/material";
 import {useUserQueries} from "../../hooks/useUserQueries.ts";
-import {useAuth} from "../../hooks/useAuth.ts";
-import {SearchAgent} from "./SearchAgent.tsx";
+import {SingleSearchAgent} from "./SingleSearchAgent.tsx";
 
 export const AllSearchAgents: React.FC = () => {
-    const {user} = useAuth();
-    const {savedQueries, queriesLoading} = useUserQueries(user?.uid)
+    const {savedQueries, queriesLoading} = useUserQueries()
 
     if(queriesLoading) {
         return (
             <Stack spacing={0.3}>
-                <Skeleton variant="rectangular" height={60} />
-                <Skeleton variant="rectangular" height={60} />
-                <Skeleton variant="rectangular" height={60} />
+                <Skeleton variant="rectangular" height={48} />
+                <Skeleton variant="rectangular" height={48} />
+                <Skeleton variant="rectangular" height={48} />
+                <Skeleton variant="rectangular" height={48} />
             </Stack>
+        );
+    }
+
+    if(savedQueries.length === 0) {
+        return (
+            <Typography>
+                <em>Du hast noch keine Such-Agenten erstellt. Klicke auf den Button oben, um deinen ersten Such-Agenten zu erstellen!</em>
+            </Typography>
         );
     }
 
@@ -22,7 +29,7 @@ export const AllSearchAgents: React.FC = () => {
         <Box>
             {
                 savedQueries.map((query, index) => (
-                    <SearchAgent key={index} data={query} />
+                    <SingleSearchAgent key={index} data={query} />
                 ))
             }
         </Box>
