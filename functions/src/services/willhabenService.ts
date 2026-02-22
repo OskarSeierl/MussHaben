@@ -10,7 +10,7 @@ const WANTED_BASE_URL = "https://www.willhaben.at/iad/kaufen-und-verkaufen/markt
  * Fetches the Willhaben categories sitemap and extracts all categories
  * @returns Promise with an array of categories
  */
-export async function fetchWillhabenCategories(): Promise<Category[]> {
+export const fetchWillhabenCategories = async (): Promise<Category[]> => {
     const response = await fetch(CATEGORIES_SITEMAP_URL);
 
     if (!response.ok) {
@@ -28,7 +28,7 @@ export async function fetchWillhabenCategories(): Promise<Category[]> {
  * @param xmlText The raw XML text from the sitemap
  * @returns Array of categories with extracted information
  */
-export function parseCategories(xmlText: string): Category[] {
+const parseCategories = (xmlText: string): Category[] => {
     const categories: Category[] = [];
 
     // Extract all URLs using regex
@@ -51,7 +51,7 @@ export function parseCategories(xmlText: string): Category[] {
  * @param url The URL to parse
  * @returns Category object or null if parsing fails
  */
-export function parseCategoryFromUrl(url: string): Category | null {
+const parseCategoryFromUrl = (url: string): Category | null => {
     const urlPattern = new RegExp(WANTED_BASE_URL + "(.+)-(\\d+)$");
     const urlMatch = url.match(urlPattern);
 

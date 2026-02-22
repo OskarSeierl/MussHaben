@@ -22,7 +22,6 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
             ...prev,
             category: categoryId || 0
         }));
-        console.log(formData)
     };
 
     const handleInputChange = <K extends keyof NewQueryData>(

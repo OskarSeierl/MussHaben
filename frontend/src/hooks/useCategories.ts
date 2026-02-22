@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
-import {fetchCategories} from "../utils/categoriesApi";
 import type {Category} from "../types/category.types";
+import {getCategories} from "../config/api.ts";
 
 /**
  * Custom hook to fetch Willhaben categories
@@ -16,8 +16,8 @@ export function useCategories() {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await fetchCategories();
-                setCategories(response.categories);
+                const response = await getCategories();
+                setCategories(response.data);
             } catch (err) {
                 setError(err instanceof Error ? err : new Error(String(err)));
             } finally {

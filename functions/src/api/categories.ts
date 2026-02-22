@@ -1,21 +1,35 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { fetchWillhabenCategories } from "../services/willhabenService.js";
+import {HttpsError, onCall} from "firebase-functions/v2/https";
+import {fetchWillhabenCategories} from "../services/willhabenService.js";
+import {onSchedule} from "firebase-functions/v2/scheduler";
+import {getCachedCategories, cacheCategories} from "../services/categoryService.js";
 
 /**
- * Callable function to fetch Willhaben categories
+ * Scheduled function to update Willhaben categories in Firestore
+ * Runs on the 1st of every month at midnight
+ */
+export const updateWillhabenCategories = onSchedule("0 0 1 * *", async () => {
+  try {
+    await cacheCategories(await fetchWillhabenCategories());
+  } catch (error) {
+    console.error("Failed to update categories:", error);
+    throw error;
+  }
+});
+
+/**
+ * Callable function to fetch Willhaben categories from
  * Can be called from the frontend using Firebase Functions client SDK
  */
 export const getCategories = onCall(async () => {
   try {
-    const categories = await fetchWillhabenCategories();
-
-    return {
-      success: true,
-      categories,
-      count: categories.length,
-    };
+    const cachedCategories = await getCachedCategories();
+    if (cachedCategories) {
+        return cachedCategories;
+    }
+    const fetchedCategories = await fetchWillhabenCategories();
+    await cacheCategories(fetchedCategories);
+    return fetchedCategories;
   } catch (error) {
-    console.error("Error fetching categories:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new HttpsError(
       "internal",
