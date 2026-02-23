@@ -23,8 +23,9 @@ interface Props {
 
 export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSubmit}: Props) => {
     const [formData, setFormData] = useState<NewQueryData>(defaultData || {
+        name: "",
         category: 0,
-        keyword: '',
+        keyword: "",
         state: undefined,
         minPrice: undefined,
         maxPrice: undefined,
@@ -76,6 +77,13 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
         <Card elevation={2} sx={{p: 3}}>
             <Box component="form" onSubmit={handleSubmit}>
                 <Stack spacing={3}>
+                    <TextField
+                        label="Name"
+                        placeholder="z.B. Traumtisch, Elektronik Schnäppchen..."
+                        value={formData.name}
+                        onChange={handleInputChange('name', (val) => val)}
+                        fullWidth
+                    />
                     <CategorySelector
                         value={formData.category}
                         onChange={handleCategoryChange}

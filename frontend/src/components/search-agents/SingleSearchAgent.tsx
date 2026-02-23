@@ -75,6 +75,7 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
     };
 
     // Helper variables for cleaner JSX
+    const categoryLabel = categoriesObject[data.category]?.name || 'Unbekannt';
     const minPriceLabel = data.minPrice ?? '--';
     const maxPriceLabel = data.maxPrice ?? '--';
     const stateLabel = data.state || 'Alle Bundesländer';
@@ -90,19 +91,18 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
                     gap={2}
                     sx={{width: '100%'}}
                 >
-                    <Stack direction="row" spacing={1} alignItems="center">
-                        <CategoryIcon color="action" fontSize="small"/>
-                        <Typography variant="subtitle1">
-                            Kategorie:
-                        </Typography>
-                        {categoriesLoading ? (
-                            <Skeleton variant="text" width={120}/>
-                        ) : (
-                            <Typography>{categoriesObject[data.category]?.name || 'Unbekannt'}</Typography>
-                        )}
-                    </Stack>
-
+                    <Typography>"{data.name}"</Typography>
                     <Stack direction="row" gap={1} flexWrap="wrap">
+                        {categoriesLoading ? (
+                            <Skeleton width={150} height={19.5} variant="rounded" />
+                        ) : (
+                            <Chip
+                                size="small"
+                                variant="outlined"
+                                icon={<CategoryIcon/>}
+                                label={categoryLabel}
+                            />
+                        )}
                         <Chip
                             size="small"
                             variant="outlined"

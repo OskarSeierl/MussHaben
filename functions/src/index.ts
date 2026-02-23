@@ -11,4 +11,4 @@ export const db = getFirestore();
 
 // Export API endpoints
 export { getCategories, updateWillhabenCategories } from "./api/categories.js";
-export { getListings, updateFindings } from "./api/searchAgent.js";
+export { updateFindings } from "./api/searchAgent.js";

@@ -18,6 +18,7 @@ export enum State {
 
 export interface SearchQuery {
     id: string;
+    name: string;
     category: number;
     keyword?: string;
     state?: State;

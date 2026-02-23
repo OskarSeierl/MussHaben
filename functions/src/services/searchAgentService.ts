@@ -1,5 +1,6 @@
 import {Listing} from "../types/searchResult.types.js";
 import {SearchQuery} from "../../../shared-types/index.types.js";
+import {getMessaging} from "firebase-admin/messaging";
 
 export const getAttributeValue = (listing: Listing, attributeName: string): string | undefined => {
     const attribute = listing.attributes?.attribute.find(attr => attr.name === attributeName);
@@ -40,4 +41,30 @@ export const doesListingMatchQuery = (listing: Listing, query: SearchQuery): boo
     }
 
     return true;
-}
+};
+
+export const sendMatchNotification = async (fcmToken: string, queryNames: string[]) => {
+    const message = {
+        token: fcmToken,
+        notification: {
+            title: 'Neuer MussHaben Treffer!',
+            body: `Es gibt neue Treffer für deine Such-Agenten: ${queryNames.join(', ')}. Schau gleich nach!`
+        },
+        data: {
+            // The data payload is invisible to the user but crucial for your app.
+            // Your React frontend can read this when they click the notification
+            // to automatically open the specific Willhaben URL or route to a page.
+            //url: matchUrl,
+            //type: 'NEW_MATCH'
+        },
+        // Optional: Android/iOS specific configurations (like grouping notifications)
+        android: {
+            notification: {
+                channelId: 'default', // Highly recommended for Android 8.0+
+            }
+        }
+    };
+
+    const response = await getMessaging().send(message);
+    console.log('Successfully sent message:', response);
+};
