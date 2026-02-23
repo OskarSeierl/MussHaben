@@ -1,7 +1,20 @@
+export enum State {
+    WIEN = "WIEN",
+    NIEDEROESTERREICH = "NIEDEROESTERREICH",
+    OBEROESTERREICH = "OBEROESTERREICH",
+    STEIERMARK = "STEIERMARK",
+    KAERNTEN = "KAERNTEN",
+    SALZBURG = "SALZBURG",
+    TIROL = "TIROL",
+    VORARLBERG = "VORARLBERG",
+    BURGENLAND = "BURGENLAND",
+}
+
 export interface SavedSearchQuery {
     id: string;
     category: number;
     keyword?: string;
+    state?: string;
     minPrice?: number;
     maxPrice?: number;
     createdAt: number; // timestamp

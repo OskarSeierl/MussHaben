@@ -18,6 +18,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CategoryIcon from '@mui/icons-material/Category';
 import SearchIcon from '@mui/icons-material/Search';
+import PublicIcon from '@mui/icons-material/Public';
 import EuroIcon from '@mui/icons-material/Euro';
 import {useUserQueries} from "../../hooks/useUserQueries.ts";
 import {useInfo} from "../../hooks/useInfo.ts";
@@ -60,17 +61,18 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
                     direction="row"
                     alignItems="center"
                     justifyContent="space-between"
-                    spacing={2}
+                    flexWrap="wrap"
+                    rowGap={2}
                     sx={{width: "100%"}}
                 >
-                    <Stack direction="row" spacing={1} alignItems="center">
+                    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
                         <CategoryIcon color="action" fontSize="small"/>
                         <Typography variant="subtitle1" fontWeight={600}>
                             Kategorie:
                         </Typography>
                         {categoryElement}
                     </Stack>
-                    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+                    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" rowGap={1}>
                         <Chip
                             size="small"
                             variant="outlined"
@@ -83,6 +85,12 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
                             variant="outlined"
                             icon={<EuroIcon/>}
                             label={`Preis: ${minPriceLabel}€ - ${maxPriceLabel}€`}
+                        />
+                        <Chip
+                            size="small"
+                            variant="outlined"
+                            icon={<PublicIcon/>}
+                            label={data.state ? `${data.state}` : 'Alle Bundesländer'}
                         />
                     </Stack>
                 </Stack>

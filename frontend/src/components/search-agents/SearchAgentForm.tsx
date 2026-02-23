@@ -1,7 +1,18 @@
 import React, {useState} from 'react';
-import {Box, Button, Card, Stack, TextField} from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    FormControl, FormHelperText,
+    InputLabel,
+    MenuItem,
+    Select,
+    type SelectChangeEvent,
+    Stack,
+    TextField
+} from "@mui/material";
 import CategorySelector from "./CategorySelector.tsx";
-import type {NewQueryData, SavedSearchQuery} from "../../types/query.types.ts";
+import {type NewQueryData, type SavedSearchQuery, State} from "../../types/query.types.ts";
 
 interface Props {
     buttonText: string;
@@ -13,6 +24,7 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
     const [formData, setFormData] = useState<NewQueryData>(defaultData || {
         category: 0,
         keyword: '',
+        state: undefined,
         minPrice: undefined,
         maxPrice: undefined,
     });
@@ -21,6 +33,14 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
         setFormData(prev => ({
             ...prev,
             category: categoryId || 0
+        }));
+    };
+
+    const handleStateChange = (event: SelectChangeEvent) => {
+        const value = event.target.value;
+        setFormData(prev => ({
+            ...prev,
+            state: value.length === 0 ? undefined : value
         }));
     };
 
@@ -33,7 +53,7 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
         const value = event.target.value;
 
         const formDataCopy: NewQueryData = {...formData};
-        if(value.length === 0) {
+        if (value.length === 0) {
             formDataCopy[field] = undefined as NewQueryData[K];
         } else {
             formDataCopy[field] = format(value);
@@ -52,23 +72,45 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
         && (formData.minPrice || 0) <= (formData.maxPrice || Number.MAX_SAFE_INTEGER);
 
     return (
-        <Card elevation={2} sx={{ p: 3 }}>
+        <Card elevation={2} sx={{p: 3}}>
             <Box component="form" onSubmit={handleSubmit}>
                 <Stack spacing={3}>
                     <CategorySelector
                         value={formData.category}
                         onChange={handleCategoryChange}
                     />
-                    <TextField
-                        label="Suchbegriff"
-                        placeholder="z.B. iPhone, Wohnung, Auto..."
-                        value={formData.keyword}
-                        onChange={handleInputChange('keyword', (val) => val)}
-                        fullWidth
-                        helperText="Optional: Geben Sie einen Suchbegriff ein"
-                    />
-
-                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                    <Stack direction={{xs: 'column', sm: 'row'}} spacing={2}>
+                        <TextField
+                            label="Suchbegriff"
+                            placeholder="z.B. iPhone, Wohnung, Auto..."
+                            value={formData.keyword}
+                            onChange={handleInputChange('keyword', (val) => val)}
+                            helperText="Optional: Geben Sie einen Suchbegriff ein"
+                            fullWidth
+                        />
+                        <FormControl fullWidth>
+                            <InputLabel id="select-state-input-label">Bundesland</InputLabel>
+                            <Select
+                                labelId="select-state-input-label"
+                                value={formData.state ?? ''}
+                                label="Bundesland"
+                                onChange={handleStateChange}
+                                variant="outlined"
+                            >
+                                <MenuItem value={State.WIEN}>Wien</MenuItem>
+                                <MenuItem value={State.NIEDEROESTERREICH}>Niederösterreich</MenuItem>
+                                <MenuItem value={State.OBEROESTERREICH}>Oberösterreich</MenuItem>
+                                <MenuItem value={State.BURGENLAND}>Burgenland</MenuItem>
+                                <MenuItem value={State.STEIERMARK}>Steiermark</MenuItem>
+                                <MenuItem value={State.VORARLBERG}>Vorarlberg</MenuItem>
+                                <MenuItem value={State.TIROL}>Tirol</MenuItem>
+                                <MenuItem value={State.KAERNTEN}>Kärnten</MenuItem>
+                                <MenuItem value={State.SALZBURG}>Salzburg</MenuItem>
+                            </Select>
+                            <FormHelperText>Optional</FormHelperText>
+                        </FormControl>
+                    </Stack>
+                    <Stack direction={{xs: 'column', sm: 'row'}} spacing={2}>
                         <TextField
                             label="Mindestpreis"
                             type="number"
@@ -77,7 +119,7 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
                             onChange={handleInputChange('minPrice', (val) => Number(val))}
                             fullWidth
                             slotProps={{
-                                htmlInput: { min: 0 }
+                                htmlInput: {min: 0}
                             }}
                             helperText="Optional"
                         />
@@ -90,7 +132,7 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
                             onChange={handleInputChange('maxPrice', (val) => Number(val))}
                             fullWidth
                             slotProps={{
-                                htmlInput: { min: 0 }
+                                htmlInput: {min: 0}
                             }}
                             helperText="Optional"
                         />
@@ -110,4 +152,3 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
         </Card>
     );
 };
-
