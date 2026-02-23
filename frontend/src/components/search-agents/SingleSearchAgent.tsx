@@ -1,11 +1,27 @@
 import React from 'react';
-import {Accordion, AccordionActions, AccordionDetails, AccordionSummary, Button, Grid, Typography} from "@mui/material";
+import {
+    Accordion,
+    AccordionActions,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    Button,
+    Chip,
+    Divider, Skeleton,
+    Stack,
+    Tooltip,
+    Typography
+} from "@mui/material";
 import type {SavedSearchQuery} from "../../types/query.types.ts";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CategoryIcon from '@mui/icons-material/Category';
+import SearchIcon from '@mui/icons-material/Search';
+import EuroIcon from '@mui/icons-material/Euro';
 import {useUserQueries} from "../../hooks/useUserQueries.ts";
 import {useInfo} from "../../hooks/useInfo.ts";
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {useCategories} from "../../hooks/useCategories.ts";
 
 interface Props {
@@ -26,26 +42,80 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
         }
     };
 
+    const categoryElement = loading
+        ? <Skeleton variant="text" width={200} />
+        : <Typography>{categoriesObject[data.category].name}</Typography>;
+
+    const minPriceLabel = data.minPrice ?? '__';
+    const maxPriceLabel = data.maxPrice ?? '__';
+
     return (
         <Accordion>
             <AccordionSummary
+                expandIcon={<ExpandMoreIcon/>}
                 aria-controls={`${data.id}-content`}
                 id={`${data.id}-header`}
             >
-                <Grid container sx={{width: "100%"}}>
-                    <Grid size={6}>
-                        <Typography>Kategorie: {loading ? <em>lädt...</em> : categoriesObject[data.category].name}</Typography>
-                    </Grid>
-                    <Grid size={3}>
-                        <Typography>Keyword: {data.keyword}</Typography>
-                    </Grid>
-                    <Grid size={3}>
-                        <Typography>Preis-Spanne: {data.minPrice || "__"}€ - {data.maxPrice || "__"}€</Typography>
-                    </Grid>
-                </Grid>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    spacing={2}
+                    sx={{width: "100%"}}
+                >
+                    <Stack direction="row" spacing={1} alignItems="center">
+                        <CategoryIcon color="action" fontSize="small"/>
+                        <Typography variant="subtitle1" fontWeight={600}>
+                            Kategorie:
+                        </Typography>
+                        {categoryElement}
+                    </Stack>
+                    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+                        <Chip
+                            size="small"
+                            variant="outlined"
+                            color="primary"
+                            icon={<SearchIcon/>}
+                            label={data.keyword ? `Keyword: ${data.keyword}` : 'Kein Keyword'}
+                        />
+                        <Chip
+                            size="small"
+                            variant="outlined"
+                            icon={<EuroIcon/>}
+                            label={`Preis: ${minPriceLabel}€ - ${maxPriceLabel}€`}
+                        />
+                    </Stack>
+                </Stack>
             </AccordionSummary>
             <AccordionDetails>
-                TODO
+                <Stack spacing={2}>
+                    <Divider/>
+                    <Box>
+                        <Typography variant="body2" color="text.secondary">
+                            Such-Agent Details
+                        </Typography>
+                    </Box>
+                    <Stack direction={{xs: 'column', sm: 'row'}} spacing={1} flexWrap="wrap">
+                        <Tooltip title="Kategorie">
+                            <Chip size="small" icon={<CategoryIcon/>} label={categoryElement}/>
+                        </Tooltip>
+                        <Tooltip title="Keyword">
+                            <Chip
+                                size="small"
+                                color="primary"
+                                icon={<SearchIcon/>}
+                                label={data.keyword ? data.keyword : 'Kein Keyword'}
+                            />
+                        </Tooltip>
+                        <Tooltip title="Preis-Spanne">
+                            <Chip
+                                size="small"
+                                icon={<EuroIcon/>}
+                                label={`${minPriceLabel}€ - ${maxPriceLabel}€`}
+                            />
+                        </Tooltip>
+                    </Stack>
+                </Stack>
             </AccordionDetails>
             <AccordionActions>
                 <Button
@@ -69,4 +139,3 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
         </Accordion>
     );
 };
-
