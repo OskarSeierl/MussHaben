@@ -97,6 +97,7 @@ export const SingleSearchAgent: React.FC<Props> = ({ data }) => {
                     justifyContent="space-between"
                     flexWrap="wrap"
                     gap={2}
+                    sx={{width: '100%'}}
                 >
                     <Stack direction="row" spacing={1} alignItems="center">
                         <CategoryIcon color="action" fontSize="small" />
