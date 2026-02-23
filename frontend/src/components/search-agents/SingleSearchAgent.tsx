@@ -4,7 +4,6 @@ import {
     AccordionActions,
     AccordionDetails,
     AccordionSummary,
-    Badge,
     Box,
     Button,
     Chip,
@@ -16,7 +15,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CategoryIcon from '@mui/icons-material/Category';
 import SearchIcon from '@mui/icons-material/Search';
 import PublicIcon from '@mui/icons-material/Public';
@@ -83,16 +81,7 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
 
     return (
         <Accordion expanded={isExpanded} onChange={handleAccordionChange}>
-            <AccordionSummary
-                expandIcon={
-                    isExpanded ?
-                        <ExpandMoreIcon/> : (
-                            <Badge badgeContent={matches?.length || 0} color="primary" max={99}>
-                                <ExpandMoreIcon/>
-                            </Badge>
-                        )
-                }
-            >
+            <AccordionSummary>
                 <Stack
                     direction="row"
                     alignItems="center"
