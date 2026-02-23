@@ -83,6 +83,7 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
                         value={formData.name}
                         onChange={handleInputChange('name', (val) => val)}
                         fullWidth
+                        inputProps={{maxLength: 32}}
                     />
                     <CategorySelector
                         value={formData.category}

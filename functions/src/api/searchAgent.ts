@@ -27,7 +27,14 @@ export const updateFindings = onSchedule("every 5 minutes", async () => {
                         const matchRef = db.doc(`users/${queryUserId}/queries/${query.id}/matches/${listing.id}`);
                         const matchSnap = await matchRef.get();
                         if (!matchSnap.exists) {
-                            userMatches[queryUserId] = [...(userMatches[queryUserId] || []), queryData.name];
+                            if(!(queryUserId in userMatches)) {
+                                userMatches[queryUserId] = {};
+                            }
+                            if(!(queryData.name in userMatches[queryUserId])) {
+                                userMatches[queryUserId][queryData.name] = [];
+                            }
+                            userMatches[queryUserId][queryData.name].push(listing.id);
+
                             batch.set(matchRef, {
                                 description: listing.description,
                                 imageUrl: listing.advertImageList.advertImage[0].thumbnailImageUrl,
