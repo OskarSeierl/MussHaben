@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
-import type {CategoriesContextType, Category} from "../types/category.types";
+import type {CategoriesContextType} from "../types/category.types";
 import {getCategories} from "../config/api.ts";
 import {CategoriesContext} from "./CategoriesContext.ts";
 import { Outlet } from "react-router-dom";
+import type {Category} from "../../../shared-types/index.types.ts";
 
 /**
  * Provider component for managing Willhaben categories
