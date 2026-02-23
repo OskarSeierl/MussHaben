@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     Accordion,
     AccordionActions,
@@ -22,27 +22,27 @@ import SearchIcon from '@mui/icons-material/Search';
 import PublicIcon from '@mui/icons-material/Public';
 import EuroIcon from '@mui/icons-material/Euro';
 import InboxIcon from '@mui/icons-material/Inbox';
-import { Link } from 'react-router-dom';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../config/firebase.ts';
+import {Link} from 'react-router-dom';
+import {collection, getDocs} from 'firebase/firestore';
+import {db} from '../../config/firebase.ts';
 
-import { useUserQueries } from "../../hooks/useUserQueries.ts";
-import { useInfo } from "../../hooks/useInfo.ts";
-import { useAuth } from "../../hooks/useAuth.ts";
-import { useCategories } from "../../hooks/useCategories.ts";
-import type { Match, SearchQuery } from "../../../../shared-types/index.types.ts";
+import {useUserQueries} from "../../hooks/useUserQueries.ts";
+import {useInfo} from "../../hooks/useInfo.ts";
+import {useAuth} from "../../hooks/useAuth.ts";
+import {useCategories} from "../../hooks/useCategories.ts";
+import type {Match, SearchQuery} from "../../../../shared-types/index.types.ts";
 import {MatchCard} from "./MatchCard.tsx";
-import { Timestamp } from 'firebase/firestore';
+import {Timestamp} from 'firebase/firestore';
 
 interface Props {
     data: SearchQuery;
 }
 
-export const SingleSearchAgent: React.FC<Props> = ({ data }) => {
-    const { deleteQuery } = useUserQueries();
-    const { showError, showSuccess } = useInfo();
-    const { user } = useAuth();
-    const { categoriesObject, loading: categoriesLoading } = useCategories();
+export const SingleSearchAgent: React.FC<Props> = ({data}) => {
+    const {deleteQuery} = useUserQueries();
+    const {showError, showSuccess} = useInfo();
+    const {user} = useAuth();
+    const {categoriesObject, loading: categoriesLoading} = useCategories();
 
     const [matches, setMatches] = useState<Match<Timestamp>[] | undefined>(undefined);
     const [matchesLoading, setMatchesLoading] = useState<boolean>(false);
@@ -51,7 +51,6 @@ export const SingleSearchAgent: React.FC<Props> = ({ data }) => {
     const handleAccordionChange = async (_event: React.SyntheticEvent, expanded: boolean) => {
         setIsExpanded(expanded);
 
-        // Fetch matches only on first expand
         if (expanded && matches === undefined && user) {
             setMatchesLoading(true);
             try {
@@ -86,9 +85,12 @@ export const SingleSearchAgent: React.FC<Props> = ({ data }) => {
         <Accordion expanded={isExpanded} onChange={handleAccordionChange}>
             <AccordionSummary
                 expandIcon={
-                    <Badge badgeContent={matches?.length || 0} color="primary" max={99}>
-                        <ExpandMoreIcon />
-                    </Badge>
+                    isExpanded ?
+                        <ExpandMoreIcon/> : (
+                            <Badge badgeContent={matches?.length || 0} color="primary" max={99}>
+                                <ExpandMoreIcon/>
+                            </Badge>
+                        )
                 }
             >
                 <Stack
@@ -100,12 +102,12 @@ export const SingleSearchAgent: React.FC<Props> = ({ data }) => {
                     sx={{width: '100%'}}
                 >
                     <Stack direction="row" spacing={1} alignItems="center">
-                        <CategoryIcon color="action" fontSize="small" />
+                        <CategoryIcon color="action" fontSize="small"/>
                         <Typography variant="subtitle1">
                             Kategorie:
                         </Typography>
                         {categoriesLoading ? (
-                            <Skeleton variant="text" width={120} />
+                            <Skeleton variant="text" width={120}/>
                         ) : (
                             <Typography>{categoriesObject[data.category]?.name || 'Unbekannt'}</Typography>
                         )}
@@ -116,19 +118,19 @@ export const SingleSearchAgent: React.FC<Props> = ({ data }) => {
                             size="small"
                             variant="outlined"
                             color={data.keyword ? "primary" : "default"}
-                            icon={<SearchIcon />}
+                            icon={<SearchIcon/>}
                             label={data.keyword || 'Kein Keyword'}
                         />
                         <Chip
                             size="small"
                             variant="outlined"
-                            icon={<EuroIcon />}
+                            icon={<EuroIcon/>}
                             label={`${minPriceLabel} - ${maxPriceLabel}`}
                         />
                         <Chip
                             size="small"
                             variant="outlined"
-                            icon={<PublicIcon />}
+                            icon={<PublicIcon/>}
                             label={stateLabel}
                         />
                     </Stack>
@@ -137,7 +139,7 @@ export const SingleSearchAgent: React.FC<Props> = ({ data }) => {
 
             <AccordionDetails>
                 <Stack spacing={3}>
-                    <Divider />
+                    <Divider/>
 
                     {/* Results Section */}
                     <Box>
@@ -146,8 +148,8 @@ export const SingleSearchAgent: React.FC<Props> = ({ data }) => {
                         </Typography>
 
                         {matchesLoading ? (
-                            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                                <CircularProgress />
+                            <Box sx={{display: 'flex', justifyContent: 'center', py: 4}}>
+                                <CircularProgress/>
                             </Box>
                         ) : matches?.length === 0 ? (
                             <Box
@@ -161,7 +163,7 @@ export const SingleSearchAgent: React.FC<Props> = ({ data }) => {
                                     textAlign: 'center',
                                 }}
                             >
-                                <InboxIcon sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
+                                <InboxIcon sx={{fontSize: 60, color: 'text.secondary', mb: 2}}/>
                                 <Typography variant="h6" color="text.secondary">
                                     Keine Matches gefunden
                                 </Typography>
@@ -178,7 +180,7 @@ export const SingleSearchAgent: React.FC<Props> = ({ data }) => {
                             >
                                 <Stack spacing={2}>
                                     {matches?.map((match) => (
-                                        <MatchCard key={match.link} match={match} />
+                                        <MatchCard key={match.link} match={match}/>
                                     ))}
                                 </Stack>
                             </Box>
@@ -192,14 +194,14 @@ export const SingleSearchAgent: React.FC<Props> = ({ data }) => {
                     component={Link}
                     to={`/search-agents/${data.id}/edit`}
                     variant="outlined"
-                    startIcon={<EditIcon />}
+                    startIcon={<EditIcon/>}
                 >
                     Bearbeiten
                 </Button>
                 <Button
                     variant="contained"
                     color="error"
-                    startIcon={<DeleteIcon />}
+                    startIcon={<DeleteIcon/>}
                     onClick={handleAgentDelete}
                 >
                     Löschen
