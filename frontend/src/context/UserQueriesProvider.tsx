@@ -9,12 +9,13 @@ import {
     serverTimestamp,
     updateDoc
 } from "firebase/firestore";
-import type {NewQueryData, SavedSearchQuery} from "../types/query.types.ts";
+import type {NewQueryData} from "../types/query.types.ts";
 import {UserQueriesContext} from "./UserQueriesContext.ts";
 import React, {useEffect, useState} from "react";
 import {db} from "../config/firebase.ts";
 import {useAuth} from "../hooks/useAuth.ts";
 import {Outlet} from "react-router-dom";
+import type {SearchQuery} from "../../../shared-types/index.types.ts";
 
 const getUserQueriesRef = (userId: string) => collection(db, 'users', userId, 'queries');
 const getUserQueryRef = (userId: string, queryId: string) => doc(db, 'users', userId, 'queries', queryId);
@@ -22,7 +23,7 @@ const getUserQueryRef = (userId: string, queryId: string) => doc(db, 'users', us
 export const UserQueriesProvider: React.FC = () => {
     const {user} = useAuth();
 
-    const [savedQueries, setSavedQueries] = useState<SavedSearchQuery[]>([]);
+    const [savedQueries, setSavedQueries] = useState<SearchQuery[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -35,7 +36,7 @@ export const UserQueriesProvider: React.FC = () => {
                 const results = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
-                })) as SavedSearchQuery[];
+                })) as SearchQuery[];
 
                 setSavedQueries(results);
                 setLoading(false);

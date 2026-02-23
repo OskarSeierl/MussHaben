@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
-import {Category} from "../types/category.types.js";
+import {Listing, WillhabenSearchResult} from "../types/searchResult.types.js";
+import {Category} from "../../../shared-types/index.types.js";
 
 const CATEGORIES_SITEMAP_URL = "https://www.willhaben.at/sitemap/sitemapindex-marktplatz-kategorien.xml";
 
@@ -64,4 +65,61 @@ const parseCategoryFromUrl = (url: string): Category | null => {
 
     return {url, id, name,};
 }
+
+export const getNewListings = async (): Promise<Listing[]> => {
+    return getListings(WANTED_BASE_URL+ "?rows=1000"); // fetch maximum listings (currently 200)
+};
+
+/**
+ * Fetches a Willhaben search results page and extracts the listings
+ * @param url The URL of the search results page to fetch
+ * @returns Promise with an array of cleaned listing objects
+ * @author Christian Proschek (https://github.com/CP02A/willhaben)
+ */
+export const getListings = async (url: string): Promise<Listing[]> => {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch URL. HTTP Status: ${response.status}`);
+    }
+
+    const htmlString = await response.text();
+    const scriptStartTag = '<script id="__NEXT_DATA__" type="application/json">';
+    const startIndex = htmlString.indexOf(scriptStartTag);
+
+    if (startIndex === -1) {
+        throw new Error("Could not find Next.js data script tag in the HTML response.");
+    }
+
+    // Extract the JSON string out of the HTML
+    const dataString = htmlString.substring(startIndex + scriptStartTag.length);
+    const jsonString = dataString.substring(0, dataString.indexOf('</script>'));
+
+    // Cast the parsed JSON to your specific Willhaben root interface
+    const result = JSON.parse(jsonString) as WillhabenSearchResult;
+
+    const rawAdverts = result?.props?.pageProps?.searchResult?.advertSummaryList?.advertSummary;
+
+    if (!Array.isArray(rawAdverts)) {
+        throw new Error("Unexpected JSON structure: Could not find advertSummary array.");
+    }
+
+    return rawAdverts.map(rawObj => ({
+        id: rawObj.id,
+        attributes: rawObj.attributes,
+        description: rawObj.description,
+        advertImageList: {
+            advertImage: rawObj.advertImageList.advertImage.map(image => ({
+                id: image.id,
+                thumbnailImageUrl: image.thumbnailImageUrl,
+            }))
+        },
+        contextLinkList: {
+            contextLink: rawObj.contextLinkList.contextLink.map(link => ({
+                id: link.id,
+                uri: link.uri,
+            }))
+        },
+    }));
+};
 

@@ -12,11 +12,12 @@ import {
     TextField
 } from "@mui/material";
 import CategorySelector from "./CategorySelector.tsx";
-import {type NewQueryData, type SavedSearchQuery, State} from "../../types/query.types.ts";
+import {type NewQueryData} from "../../types/query.types.ts";
+import {type SearchQuery, State} from "../../../../shared-types/index.types.ts";
 
 interface Props {
     buttonText: string;
-    defaultData?: SavedSearchQuery;
+    defaultData?: SearchQuery;
     onSubmit: (data: NewQueryData) => void;
 }
 
@@ -37,7 +38,7 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
     };
 
     const handleStateChange = (event: SelectChangeEvent) => {
-        const value = event.target.value;
+        const value = event.target.value as State;
         setFormData(prev => ({
             ...prev,
             state: value.length === 0 ? undefined : value

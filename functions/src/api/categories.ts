@@ -20,7 +20,14 @@ export const updateWillhabenCategories = onSchedule("0 0 1 * *", async () => {
  * Callable function to fetch Willhaben categories from
  * Can be called from the frontend using Firebase Functions client SDK
  */
-export const getCategories = onCall(async () => {
+export const getCategories = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError(
+        "unauthenticated",
+        "You must be logged in to fetch categories."
+    );
+  }
+
   try {
     const cachedCategories = await getCachedCategories();
     if (cachedCategories) {

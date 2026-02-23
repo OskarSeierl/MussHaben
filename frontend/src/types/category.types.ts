@@ -1,11 +1,4 @@
-/**
- * Interface for a Willhaben category
- */
-export interface Category {
-  url: string;
-  id: number;
-  name: string;
-}
+import type {Category} from "../../../shared-types/index.types.ts";
 
 export interface CategoryOption {
   label: string;

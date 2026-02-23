@@ -1,30 +1,10 @@
-export enum State {
-    WIEN = "WIEN",
-    NIEDEROESTERREICH = "NIEDEROESTERREICH",
-    OBEROESTERREICH = "OBEROESTERREICH",
-    STEIERMARK = "STEIERMARK",
-    KAERNTEN = "KAERNTEN",
-    SALZBURG = "SALZBURG",
-    TIROL = "TIROL",
-    VORARLBERG = "VORARLBERG",
-    BURGENLAND = "BURGENLAND",
-}
+import type {SearchQuery} from "../../../shared-types/index.types.ts";
 
-export interface SavedSearchQuery {
-    id: string;
-    category: number;
-    keyword?: string;
-    state?: string;
-    minPrice?: number;
-    maxPrice?: number;
-    createdAt: number; // timestamp
-}
-
-export type NewQueryData = Omit<SavedSearchQuery, 'id' | 'createdAt'>;
+export type NewQueryData = Omit<SearchQuery, 'id' | 'createdAt'>;
 
 export interface UserQueriesContextType {
-    savedQueries: SavedSearchQuery[];
-    getQueryByIdSafe: (queryId: string) => SavedSearchQuery;
+    savedQueries: SearchQuery[];
+    getQueryByIdSafe: (queryId: string) => SearchQuery;
     queriesLoading: boolean;
     addQuery: (queryData: NewQueryData) => Promise<void>;
     updateQuery: (queryId: string, updatedData: Partial<NewQueryData>) => Promise<void>;
