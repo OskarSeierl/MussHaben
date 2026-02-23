@@ -50,6 +50,8 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
     const minPriceLabel = data.minPrice ?? '__';
     const maxPriceLabel = data.maxPrice ?? '__';
 
+    const stateLabel = data.state ? data.state : 'Alle Bundesländer';
+
     return (
         <Accordion>
             <AccordionSummary
@@ -90,7 +92,7 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
                             size="small"
                             variant="outlined"
                             icon={<PublicIcon/>}
-                            label={data.state ? `${data.state}` : 'Alle Bundesländer'}
+                            label={stateLabel}
                         />
                     </Stack>
                 </Stack>
@@ -120,6 +122,13 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
                                 size="small"
                                 icon={<EuroIcon/>}
                                 label={`${minPriceLabel}€ - ${maxPriceLabel}€`}
+                            />
+                        </Tooltip>
+                        <Tooltip title="Ort">
+                            <Chip
+                                size="small"
+                                icon={<PublicIcon/>}
+                                label={stateLabel}
                             />
                         </Tooltip>
                     </Stack>
