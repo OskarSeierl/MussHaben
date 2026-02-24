@@ -4,7 +4,7 @@ import {useCategories} from "../../hooks/useCategories";
 import {useInfo} from "../../hooks/useInfo.ts";
 import type {CategoryOption} from "../../types/category.types.ts";
 
-const AUTOCOMPLETE_MATCHES_LIMIT = 50;
+const AUTOCOMPLETE_MATCHES_LIMIT = 70;
 
 interface Props {
     value?: number;
@@ -45,6 +45,8 @@ const CategorySelector: React.FC<Props> = ({ value, onChange }) => {
               onChange?.(newValue?.id || null);
           }}
           filterOptions={createFilterOptions({
+              ignoreCase: true,
+              ignoreAccents: true,
               limit: AUTOCOMPLETE_MATCHES_LIMIT
           })}
           renderInput={(params) => (
