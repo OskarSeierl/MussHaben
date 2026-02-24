@@ -24,7 +24,7 @@ messaging.onBackgroundMessage((payload) => {
         tag: 'search-agent-matches', // Groups notifications with the same tag
         renotify: true, // Vibrate/sound even when replacing existing notification
         data: {
-            url: payload.data?.url || '/',
+            url: payload.data?.url || "https://willhaben-advanced-agent.web.app/",
             ...payload.data
         },
         requireInteraction: false, // Auto-dismiss after some time
@@ -38,7 +38,7 @@ self.addEventListener('notificationclick', (event) => {
     event.notification.close();
 
     // Get the URL from notification data, default to search agents page
-    const urlToOpen = event.notification.data?.url || '/';
+    const urlToOpen = event.notification.data?.url || 'https://willhaben-advanced-agent.web.app/';
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUnowned: true }).then((clientList) => {

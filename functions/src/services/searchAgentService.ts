@@ -61,7 +61,7 @@ export const sendMatchNotification = async (fcmToken: string, userMatch: UserMat
         },
         data: {
             // Add data to handle click action and grouping
-            url: '/search-agents',
+            url: 'https://willhaben-advanced-agent.web.app/',
             agentCount: agentEntries.length.toString(),
             totalMatches: totalMatches.toString(),
             timestamp: Date.now().toString()
