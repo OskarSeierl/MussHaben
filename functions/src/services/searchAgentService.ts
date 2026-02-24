@@ -27,7 +27,7 @@ export const doesListingMatchQuery = (listing: Listing, query: SearchQuery): boo
 
     // Check price
     const listingPrice = parseFloat(getAttributeValue(listing, "PRICE") || "0");
-    if((query.minPrice || 0) > listingPrice || (query.maxPrice || Number.MAX_SAFE_INTEGER) < listingPrice) {
+    if((query.minPrice ?? 0) > listingPrice || (query.maxPrice ?? Number.MAX_SAFE_INTEGER) < listingPrice) {
         return false;
     }
 
