@@ -39,7 +39,7 @@ const CategorySelector: React.FC<Props> = ({ value, onChange }) => {
 
   return (
       <Autocomplete
-          loading={true}
+          loading={loading}
           value={selectedOption}
           onChange={(_, newValue: CategoryOption | null) => {
               onChange?.(newValue?.id || null);
