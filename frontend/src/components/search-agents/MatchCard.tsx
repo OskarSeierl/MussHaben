@@ -36,7 +36,7 @@ export const MatchCard: React.FC<Props> = ({ match }) => {
                                     sx={{ alignSelf: 'flex-start' }}
                                 />
                                 <Typography variant="caption" color="text.secondary">
-                                    Gefunden: {new Date(match.timestamp.seconds).toLocaleDateString('de-AT', {
+                                    Gefunden: {new Date(match.timestamp.seconds * 1000).toLocaleDateString('de-AT', {
                                     day: '2-digit', month: '2-digit', year: 'numeric',
                                     hour: '2-digit', minute: '2-digit',
                                 })}

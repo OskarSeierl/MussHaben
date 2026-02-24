@@ -38,10 +38,10 @@ export const updateFindings = onSchedule("every 5 minutes", async () => {
                             batch.set(matchRef, {
                                 description: listing.description,
                                 imageUrl: listing.advertImageList.advertImage[0].thumbnailImageUrl,
-                                price: parseFloat(getAttributeValue(listing, "PRICE") || "0").toFixed(2),
+                                price: parseFloat(getAttributeValue(listing, "PRICE") || "0"),
                                 link: listing.contextLinkList.contextLink.find(link => link.id === "iadShareLink")?.uri || "",
                                 timestamp: Timestamp.now(),
-                                expireAt: Timestamp.fromDate(new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)), // expire after 3 days
+                                expireAt: Timestamp.fromDate(new Date(Date.now() + 24 * 60 * 60 * 1000)), // expire after 1 day
                             } as Match<Timestamp>);
                         }
                     }

@@ -45,19 +45,42 @@ export const doesListingMatchQuery = (listing: Listing, query: SearchQuery): boo
 };
 
 export const sendMatchNotification = async (fcmToken: string, userMatch: UserMatch) => {
-    const resultString = Object.entries(userMatch)
+    const agentEntries = Object.entries(userMatch);
+    const totalMatches = agentEntries.reduce((sum, [, matches]) => sum + matches.length, 0);
+
+    // Create a detailed body for grouped notifications
+    const resultString = agentEntries
         .map(([agentName, matches]) => `${agentName} (${matches.length})`)
         .join(', ');
+
     const message = {
         token: fcmToken,
         notification: {
             title: 'Neuer MussHaben Treffer!',
             body: `Es gibt neue Treffer für deine Such-Agenten: ${resultString}. Schau gleich nach!`
         },
-        data: {},
+        data: {
+            // Add data to handle click action and grouping
+            url: '/search-agents',
+            agentCount: agentEntries.length.toString(),
+            totalMatches: totalMatches.toString(),
+            timestamp: Date.now().toString()
+        },
         android: {
             notification: {
                 channelId: 'default', // Highly recommended for Android 8.0+
+                tag: 'search-agent-matches', // Groups notifications with the same tag
+                clickAction: 'FLUTTER_NOTIFICATION_CLICK'
+            }
+        },
+        webpush: {
+            fcmOptions: {
+                link: '/' // Opens this URL when notification is clicked
+            },
+            notification: {
+                tag: 'search-agent-matches', // Groups notifications on web
+                renotify: true, // Show notification even if one with same tag exists
+                requireInteraction: false
             }
         }
     };

@@ -21,7 +21,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import EuroIcon from '@mui/icons-material/Euro';
 import InboxIcon from '@mui/icons-material/Inbox';
 import {Link} from 'react-router-dom';
-import {collection, getDocs} from 'firebase/firestore';
+import {collection, getDocs, orderBy, query} from 'firebase/firestore';
 import {db} from '../../config/firebase.ts';
 
 import {useUserQueries} from "../../hooks/useUserQueries.ts";
@@ -53,7 +53,8 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
             setMatchesLoading(true);
             try {
                 const matchesRef = collection(db, `users/${user.uid}/queries/${data.id}/matches`);
-                const matchesSnapshot = await getDocs(matchesRef);
+                const matchesQuery = query(matchesRef, orderBy('timestamp', 'desc'));
+                const matchesSnapshot = await getDocs(matchesQuery);
                 const loadedMatches = matchesSnapshot.docs.map(doc => doc.data() as Match<Timestamp>);
                 setMatches(loadedMatches);
             } catch (error) {

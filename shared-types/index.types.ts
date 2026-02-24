@@ -30,7 +30,7 @@ export interface SearchQuery {
 export interface Match<T = Date> {
     description: string;
     imageUrl: string;
-    price: string;
+    price: number;
     link: string;
     timestamp: T;
     expireAt: T;
