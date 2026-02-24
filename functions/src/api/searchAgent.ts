@@ -7,6 +7,7 @@ import {Match, SearchQuery} from "../../../shared-types/index.types.js";
 import {Timestamp} from "firebase-admin/firestore";
 import {UserMatches} from "../types/match.types.js";
 import {HttpsError} from "firebase-functions/https";
+import {onDocumentDeleted} from "firebase-functions/firestore";
 
 export const updateFindings = onSchedule("every 5 minutes", async () => {
     try {
@@ -70,5 +71,24 @@ export const updateFindings = onSchedule("every 5 minutes", async () => {
             "Failed to fetch categories",
             errorMessage,
         );
+    }
+});
+
+export const deleteMatchesOnQueryDelete = onDocumentDeleted("users/{userId}/queries/{queryId}", async (event) => {
+    const queryId = event.params.queryId;
+    const deletedDocRef = event.data?.ref;
+
+    if (!deletedDocRef) {
+        console.error(`No document reference found in event for query ${queryId}`);
+        return;
+    }
+
+    console.log(`User deleted query ${queryId}. Starting recursive cleanup...`);
+
+    try {
+        await db.recursiveDelete(deletedDocRef);
+        console.log(`Successfully cleaned up orphaned data for query ${queryId}`);
+    } catch (error) {
+        console.error(`Failed to cleanup sub-collections for ${queryId}:`, error);
     }
 });

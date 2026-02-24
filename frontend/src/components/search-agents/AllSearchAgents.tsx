@@ -28,8 +28,8 @@ export const AllSearchAgents: React.FC = () => {
     return (
         <Box>
             {
-                savedQueries.map((query, index) => (
-                    <SingleSearchAgent key={index} data={query} />
+                savedQueries.map((query) => (
+                    <SingleSearchAgent key={query.id} data={query} />
                 ))
             }
         </Box>
