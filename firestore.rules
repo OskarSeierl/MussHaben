@@ -4,9 +4,18 @@ service cloud.firestore {
 
     // Rules for the 'users' collection
     match /users/{userId}/{document=**} {
-      // 1. User must be signed in (request.auth != null)
-      // 2. The ID of the document they are trying to edit must match their Auth UID (request.auth.uid == userId)
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      // Allow the user to read their own profile
+            allow read: if request.auth != null && request.auth.uid == userId;
+
+            // Allow creation, but force isPremium to be false initially
+            allow create: if request.auth != null
+                          && request.auth.uid == userId
+                          && (!('isPremium' in request.resource.data) || request.resource.data.isPremium == false);
+
+            // Allow updates ONLY IF they don't change the 'isPremium' field
+            allow update: if request.auth != null
+                          && request.auth.uid == userId
+                          && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isPremium']);
     }
 
     // Deny access to everything else by default

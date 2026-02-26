@@ -1,4 +1,5 @@
 import {
+    Alert,
     Box,
     Container,
     Paper,
@@ -10,14 +11,26 @@ import {Outlet} from "react-router-dom";
 import {Navbar} from "../navigation/Navbar.tsx";
 import {BottomNavbar} from "../navigation/BottomNavbar.tsx";
 import {Footer} from "../Footer.tsx";
+import {useAuth} from "../../hooks/useAuth.ts";
 
 export const MainLayout: React.FC = () => {
     const theme = useTheme();
     const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
 
+    const {userData} = useAuth();
+
     return (
         <Container sx={{p: 0, mt: [0, 3]}}>
             <Navbar showButtons={isDesktop}/>
+
+            {
+                !userData?.isPremium && (
+                    <Alert severity="info" sx={{mt: [1, 3]}}>
+                        MussHaben ist ein reines Hobbyprojekt und ist nicht für kommerziellen Nutzen gebaut.
+                        Aufgrunddessen ist die Anzahl der Such-Agenten pro Nutzer auf 1 begrenzt.
+                    </Alert>
+                )
+            }
 
             <Paper sx={{p: 4, mt: [1, 3]}}>
                 <Outlet/>
