@@ -1,13 +1,13 @@
 import {
-    addDoc,
     collection,
-    deleteDoc,
     doc,
     onSnapshot,
     orderBy,
     query,
     serverTimestamp,
-    updateDoc
+    updateDoc,
+    writeBatch,
+    increment
 } from "firebase/firestore";
 import type {NewQueryData} from "../types/query.types.ts";
 import {UserQueriesContext} from "./UserQueriesContext.ts";
@@ -52,7 +52,23 @@ export const UserQueriesProvider: React.FC = () => {
 
     const addQuery = async (queryData: NewQueryData) => {
         if (!user?.uid) throw new Error("Must be logged in to save a search.");
-        await addDoc(getUserQueriesRef(user.uid), {...queryData, createdAt: serverTimestamp()});
+
+        const batch = writeBatch(db);
+
+        // Create a new document reference for the query
+        const queryRef = doc(collection(db, 'users', user.uid, 'queries'));
+
+        // Add query to batch
+        batch.set(queryRef, {...queryData, createdAt: serverTimestamp()});
+
+        // Update queryCount in user document
+        const userRef = doc(db, 'users', user.uid);
+        batch.update(userRef, {
+            queryCount: increment(1)
+        });
+
+        // Commit the batch
+        await batch.commit();
     };
 
     const updateQuery = async (queryId: string, updatedData: Partial<NewQueryData>) => {
@@ -62,7 +78,21 @@ export const UserQueriesProvider: React.FC = () => {
 
     const deleteQuery = async (queryId: string) => {
         if (!user?.uid) throw new Error("Must be logged in to delete a search.");
-        await deleteDoc(getUserQueryRef(user.uid, queryId));
+
+        const batch = writeBatch(db);
+
+        // Delete the query document
+        const queryRef = getUserQueryRef(user.uid, queryId);
+        batch.delete(queryRef);
+
+        // Decrement queryCount in user document
+        const userRef = doc(db, 'users', user.uid);
+        batch.update(userRef, {
+            queryCount: increment(-1)
+        });
+
+        // Commit the batch
+        await batch.commit();
     };
 
     const getQueryByIdSafe = (queryId: string) => {

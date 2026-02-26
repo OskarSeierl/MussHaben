@@ -13,6 +13,17 @@ The existing built-in search agent on the Willhaben website is not efficient in 
 
 This project was created for educational purposes only and is not intended for commercial use. Use this application at your own risk and be aware of the potential consequences.
 
+## Restrictions
+
+The project was built as a hobby project and is not intended for commercial use.
+For this reason, I have implemented at maximum of search agents per user.
+This is to prevent abuse of the application and to ensure that it remains a fun and educational project for everyone.
+
+### Changing Maximum Search Agents
+
+To change the maximum number of search agents per user, you can modify the `MAX_SEARCH_AGENTS_WITHOUT_PREMIUM` config constant in `src/config/maximumAgents.ts`.
+Additionally the firstore rules need to be updated to reflect the new maximum number of search agents per user. The rules can be found in `firestore.rules`.
+
 ## Development
 
 ### Start-Up

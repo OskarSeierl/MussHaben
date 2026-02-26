@@ -1,0 +1,1 @@
+export const MAX_SEARCH_AGENTS_WITHOUT_PREMIUM = 1;

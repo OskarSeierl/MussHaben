@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import {signInWithPopup, GoogleAuthProvider} from 'firebase/auth';
-import {auth} from '../../config/firebase.ts';
+import {auth, db} from '../../config/firebase.ts';
 import {useNavigate} from 'react-router-dom';
 import {Box, Button, Typography} from "@mui/material";
 import GoogleIcon from '@mui/icons-material/Google';
 import {useInfo} from '../../hooks/useInfo.ts';
+import {doc, setDoc} from "firebase/firestore";
 
 const Welcome: React.FC = () => {
     const [loading, setLoading] = useState(false);
@@ -15,7 +16,8 @@ const Welcome: React.FC = () => {
         setLoading(true);
         try {
             const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
+            const credentials = await signInWithPopup(auth, provider);
+            await setDoc(doc(db, 'users', credentials.user.uid), {queryCount: 0, isPremium: false});
             showSuccess("Anmeldung erfolgreich.")
             navigate('/');
         } catch (err) {
