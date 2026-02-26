@@ -27,12 +27,13 @@ import {
     Fingerprint as FingerprintIcon,
     Logout as LogoutIcon,
     AccountCircle as AccountCircleIcon,
-    Delete as DeleteIcon
+    Delete as DeleteIcon,
+    WorkspacePremium as WorkspacePremiumIcon
 } from '@mui/icons-material';
 import packageJson from '../../../package.json';
 
 const Profile: React.FC = () => {
-    const {user} = useAuth();
+    const {user, userData} = useAuth();
     const navigate = useNavigate();
     const {showSuccess, showError} = useInfo();
 
@@ -106,6 +107,12 @@ const Profile: React.FC = () => {
 
                     <List>
                         {[
+                            {
+                                label: 'Modell',
+                                value: userData?.isPremium ? 'Premium' : 'Standard',
+                                icon: WorkspacePremiumIcon,
+                                show: true
+                            },
                             {
                                 label: 'E-Mail',
                                 value: user.email,
