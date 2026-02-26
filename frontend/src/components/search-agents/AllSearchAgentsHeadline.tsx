@@ -14,7 +14,7 @@ export const AllSearchAgentsHeadline: React.FC<Props> = ({variant}) => {
     const {savedQueries} = useUserQueries();
     const {userData} = useAuth();
 
-    const canCreateNewAgent = !userData?.isPremium && savedQueries.length < 1;
+    const canCreateNewAgent = userData?.isPremium || savedQueries.length < MAX_SEARCH_AGENTS_WITHOUT_PREMIUM;
 
     return (
         <Stack direction={{sm: 'column', md: 'row'}} justifyContent="space-between" width="100%">
