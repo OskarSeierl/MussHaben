@@ -35,3 +35,5 @@ export interface Match<T = Date> {
     timestamp: T;
     expireAt: T;
 }
+
+export type WithId<T> = T & { id: string };

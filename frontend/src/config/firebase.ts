@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import {connectAuthEmulator, getAuth } from 'firebase/auth';
-import {connectFirestoreEmulator, initializeFirestore } from "firebase/firestore";
+import {connectFirestoreEmulator, initializeFirestore, persistentLocalCache } from "firebase/firestore";
 import {connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { getMessaging } from "firebase/messaging";
 
@@ -18,7 +18,8 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const messaging = getMessaging(app);
 export const db = initializeFirestore(app, {
-  ignoreUndefinedProperties: true
+  ignoreUndefinedProperties: true,
+  localCache: persistentLocalCache()
 });
 export const functions = getFunctions(app);
 

@@ -1,43 +1,48 @@
 rules_version = '2';
 service cloud.firestore {
-match /databases/{database}/documents {
-    match /users/{userId} {
-        allow read: if request.auth != null && request.auth.uid == userId;
+    match /databases/{database}/documents {
+        match /users/{userId} {
+            allow read: if request.auth != null && request.auth.uid == userId;
 
-        // Allow creation, force isPremium to false, and initialize queryCount
-        allow create: if request.auth != null
-            && request.auth.uid == userId
-            && (!('isPremium' in request.resource.data) || request.resource.data.isPremium == false)
-            && (!('queryCount' in request.resource.data) || request.resource.data.queryCount == 0);
+            // Allow creation, force isPremium to false, and initialize queryCount
+            allow create: if request.auth != null
+                && request.auth.uid == userId
+                && (!('isPremium' in request.resource.data) || request.resource.data.isPremium == false)
+                && (!('queryCount' in request.resource.data) || request.resource.data.queryCount == 0);
 
-        // Allow updates IF:
-        // 1. They don't touch 'isPremium' AND
-        // 2. They either don't touch 'queryCount', OR they only increment it by exactly 1
-        allow update: if request.auth != null
-            && request.auth.uid == userId
-            && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isPremium'])
-            && (
-                !request.resource.data.diff(resource.data).affectedKeys().hasAny(['queryCount'])
-                || request.resource.data.queryCount == resource.data.queryCount + 1
-                || request.resource.data.queryCount == resource.data.queryCount - 1
-            );
-
-        // Rules for the nested 'queries' subcollection
-        match /queries/{queryId} {
-            // Allow users to read, update, and delete their own queries
-            allow read, update, delete: if request.auth != null && request.auth.uid == userId;
-
-            // Creation logic (Free vs Premium)
-            allow create: if request.auth != null && request.auth.uid == userId
+            // Allow updates IF:
+            // 1. They don't touch 'isPremium' AND
+            // 2. They either don't touch 'queryCount', OR they only increment it by exactly 1
+            allow update: if request.auth != null
+                && request.auth.uid == userId
+                && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isPremium'])
                 && (
-                get(/databases/$(database)/documents/users/$(userId)).data.isPremium == true
-                || get(/databases/$(database)/documents/users/$(userId)).data.queryCount < 1
-            );
+                    !request.resource.data.diff(resource.data).affectedKeys().hasAny(['queryCount'])
+                    || request.resource.data.queryCount == resource.data.queryCount + 1
+                    || request.resource.data.queryCount == resource.data.queryCount - 1
+                );
 
-            match /matches/{matchId} {
-                allow read: if request.auth != null && request.auth.uid == userId;
+            // Rules for the nested 'queries' subcollection
+            match /queries/{queryId} {
+                // Allow users to read, update, and delete their own queries
+                allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+
+                // Creation logic (Free vs Premium)
+                allow create: if request.auth != null && request.auth.uid == userId
+                    && (
+                    get(/databases/$(database)/documents/users/$(userId)).data.isPremium == true
+                    || get(/databases/$(database)/documents/users/$(userId)).data.queryCount < 1
+                );
+
+                match /matches/{matchId} {
+                    allow read: if request.auth != null && request.auth.uid == userId;
+                }
             }
         }
+
+        match /appData/{docId} {
+            // Allow read access to appData for authenticated users
+            allow read: if request.auth != null;
         }
 
         // Deny access to everything else by default

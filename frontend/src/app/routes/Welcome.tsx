@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import {Box, Button, Typography} from "@mui/material";
 import GoogleIcon from '@mui/icons-material/Google';
 import {useInfo} from '../../hooks/useInfo.ts';
-import {doc, setDoc} from "firebase/firestore";
+import {doc, getDoc, setDoc} from "firebase/firestore";
 
 const Welcome: React.FC = () => {
     const [loading, setLoading] = useState(false);
@@ -17,7 +17,16 @@ const Welcome: React.FC = () => {
         try {
             const provider = new GoogleAuthProvider();
             const credentials = await signInWithPopup(auth, provider);
-            await setDoc(doc(db, 'users', credentials.user.uid), {queryCount: 0, isPremium: false});
+            const userRef = doc(db, 'users', credentials.user.uid);
+            const userSnap = await getDoc(userRef);
+            if (!userSnap.exists()) {
+                await setDoc(userRef, {
+                    queryCount: 0,
+                    isPremium: false
+                });
+            } else {
+                console.log("Existing user logged in, preserving data.");
+            }
             showSuccess("Anmeldung erfolgreich.")
             navigate('/');
         } catch (err) {

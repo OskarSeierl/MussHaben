@@ -14,3 +14,7 @@ export interface CategoriesContextType {
     loading: boolean;
     error: Error | null;
 }
+
+export interface WillhabenData {
+    categories: Category[];
+}
