@@ -130,11 +130,10 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
             <AccordionDetails>
                 <Stack spacing={3}>
                     <Divider/>
-
                     {/* Results Section */}
-                    <Box>
-                        <Stack direction="row" justifyContent="space-between">
-                            <Typography variant="h6" gutterBottom>
+                    <Stack spacing={2}>
+                        <Stack direction="row" justifyContent="space-between" flexWrap="wrap" rowGap={1} alignItems="center">
+                            <Typography variant="h6">
                                 Gefundene Matches ({matches?.length || 0})
                             </Typography>
                             <Stack direction="row" gap={1} flexWrap="wrap">
@@ -145,6 +144,13 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
                                             size="small"
                                             variant="outlined"
                                             icon={<CategoryIcon/>}
+                                            sx={{
+                                                height: 'auto', // Allows the chip to grow vertically
+                                                '& .MuiChip-label': {
+                                                    whiteSpace: 'normal', // Allows the text to wrap
+                                                    paddingBlock: '4px', // Adds a little top/bottom breathing room for multiline text
+                                                }
+                                            }}
                                             label={categoriesObject[catId]?.name || 'Unbekannte Kategorie'}
                                         />
                                     ))
@@ -190,7 +196,7 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
                                 </Stack>
                             </Box>
                         )}
-                    </Box>
+                    </Stack>
                 </Stack>
             </AccordionDetails>
 

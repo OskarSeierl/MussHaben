@@ -32,7 +32,7 @@ export const MainLayout: React.FC = () => {
                 )
             }
 
-            <Paper sx={{p: 4, mt: [1, 3]}}>
+            <Paper sx={{p: [2, 4], mt: [1, 3]}}>
                 <Outlet/>
             </Paper>
 
