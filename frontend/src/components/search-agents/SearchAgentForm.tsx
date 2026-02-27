@@ -11,7 +11,7 @@ import {
     Stack,
     TextField
 } from "@mui/material";
-import CategorySelector from "./CategorySelector.tsx";
+import CategorySelector, {MAX_CATEGORY_SELECTION} from "./CategorySelector.tsx";
 import {type NewQueryData} from "../../types/query.types.ts";
 import {type SearchQuery, State} from "../../../../shared-types/index.types.ts";
 
@@ -24,17 +24,17 @@ interface Props {
 export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSubmit}: Props) => {
     const [formData, setFormData] = useState<NewQueryData>(defaultData || {
         name: "",
-        category: 0,
+        categories: [],
         keyword: "",
         state: undefined,
         minPrice: undefined,
         maxPrice: undefined,
     });
 
-    const handleCategoryChange = (categoryId: number | null) => {
+    const handleCategoryChange = (categories: number[]) => {
         setFormData(prev => ({
             ...prev,
-            category: categoryId || 0
+            categories
         }));
     };
 
@@ -69,7 +69,8 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
         onSubmit(formData);
     };
 
-    const isFormValid = formData.category > 0
+    const isFormValid = formData.categories.length > 0
+        && formData.categories.length <= MAX_CATEGORY_SELECTION
         && (formData.minPrice || 0) >= 0
         && (formData.minPrice || 0) <= (formData.maxPrice || Number.MAX_SAFE_INTEGER);
 
@@ -86,7 +87,7 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
                         inputProps={{maxLength: 32}}
                     />
                     <CategorySelector
-                        value={formData.category}
+                        value={formData.categories}
                         onChange={handleCategoryChange}
                     />
                     <Stack direction={{xs: 'column', sm: 'row'}} spacing={2}>

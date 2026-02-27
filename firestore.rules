@@ -40,7 +40,7 @@ service cloud.firestore {
             }
         }
 
-        match /appData/{docId} {
+        match /appData/{document=**} {
             // Allow read access to appData for authenticated users
             allow read: if request.auth != null;
         }

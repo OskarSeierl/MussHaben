@@ -1,14 +1,15 @@
 import React, {useMemo} from 'react';
-import {Alert, Autocomplete, CircularProgress, createFilterOptions, TextField} from "@mui/material";
+import {Alert, Autocomplete, Box, CircularProgress, createFilterOptions, TextField} from "@mui/material";
 import {useCategories} from "../../hooks/useCategories";
 import {useInfo} from "../../hooks/useInfo.ts";
 import type {CategoryOption} from "../../types/category.types.ts";
 
 const AUTOCOMPLETE_MATCHES_LIMIT = 70;
+export const MAX_CATEGORY_SELECTION = 3;
 
 interface Props {
-    value?: number;
-    onChange?: (categoryId: number | null) => void;
+    value: number[];
+    onChange: (categoryIds: number[]) => void;
 }
 
 const CategorySelector: React.FC<Props> = ({ value, onChange }) => {
@@ -24,8 +25,8 @@ const CategorySelector: React.FC<Props> = ({ value, onChange }) => {
   }, [categories]);
 
   const selectedOption = useMemo(() => {
-    if (!value) return null;
-    return autoCompleteOptions.find(option => option.id === value) || null;
+    if (!value || value.length === 0) return [];
+    return autoCompleteOptions.filter(option => value.includes(option.id));
   }, [value, autoCompleteOptions]);
 
   if (error) {
@@ -39,10 +40,16 @@ const CategorySelector: React.FC<Props> = ({ value, onChange }) => {
 
   return (
       <Autocomplete
+          multiple={true}
           loading={loading}
           value={selectedOption}
-          onChange={(_, newValue: CategoryOption | null) => {
-              onChange?.(newValue?.id || null);
+          onChange={(_, newValue: CategoryOption[]) => {
+              // Limit selection to MAX_CATEGORY_SELECTION
+              if (newValue.length > MAX_CATEGORY_SELECTION) {
+                  return; // Don't allow selection beyond the limit
+              }
+              const categoryIds = newValue.map(option => option.id);
+              onChange?.(categoryIds);
           }}
           filterOptions={createFilterOptions({
               ignoreCase: true,
@@ -53,7 +60,16 @@ const CategorySelector: React.FC<Props> = ({ value, onChange }) => {
               <TextField
                   {...params}
                   label="Kategorie"
-                  helperText={`Suchen Sie nach einer Kategorie und wählen Sie sie. Es werden maximal ${AUTOCOMPLETE_MATCHES_LIMIT} Ergebnisse angezeigt.`}
+                  helperText={<>
+                      Suchen Sie nach einer Kategorie und wählen Sie sie.
+                      Es werden maximal {AUTOCOMPLETE_MATCHES_LIMIT} Ergebnisse angezeigt.
+                      <Box
+                          component="span"
+                          sx={{color: value.length >= MAX_CATEGORY_SELECTION ? "error.main" : undefined}}
+                      >
+                          (Ausgewählt: {value.length}/{MAX_CATEGORY_SELECTION})
+                      </Box>
+                  </>}
                   slotProps={{
                       input: {
                           ...params.InputProps,

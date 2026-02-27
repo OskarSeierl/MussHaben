@@ -15,7 +15,7 @@ export const normalizeString = (str: string): string => {
 export const doesListingMatchQuery = (listing: Listing, query: SearchQuery): boolean => {
     // Check category
     const listingCategories: string = getAttributeValue(listing, "categorytreeids") || "";
-    if(!listingCategories.includes(query.category.toString())) {
+    if(!query.categories.some(category => listingCategories.includes(category.toString()))) {
         return false;
     }
 

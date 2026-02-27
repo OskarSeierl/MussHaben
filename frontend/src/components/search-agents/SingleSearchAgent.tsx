@@ -76,7 +76,7 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
     };
 
     // Helper variables for cleaner JSX
-    const categoryLabel = categoriesObject[data.category]?.name || 'Unbekannt';
+    const categoryLabel = data.categories.length + " Kategorie(n)";
     const minPriceLabel = data.minPrice ?? '--';
     const maxPriceLabel = data.maxPrice ?? '--';
     const stateLabel = data.state || 'Alle Bundesländer';
@@ -133,9 +133,24 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
 
                     {/* Results Section */}
                     <Box>
-                        <Typography variant="h6" gutterBottom>
-                            Gefundene Matches ({matches?.length || 0})
-                        </Typography>
+                        <Stack direction="row" justifyContent="space-between">
+                            <Typography variant="h6" gutterBottom>
+                                Gefundene Matches ({matches?.length || 0})
+                            </Typography>
+                            <Stack direction="row" gap={1} flexWrap="wrap">
+                                {
+                                    data.categories.map((catId) => (
+                                        <Chip
+                                            key={catId}
+                                            size="small"
+                                            variant="outlined"
+                                            icon={<CategoryIcon/>}
+                                            label={categoriesObject[catId]?.name || 'Unbekannte Kategorie'}
+                                        />
+                                    ))
+                                }
+                            </Stack>
+                        </Stack>
 
                         {matchesLoading ? (
                             <Box sx={{display: 'flex', justifyContent: 'center', py: 4}}>
