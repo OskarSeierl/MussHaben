@@ -1,6 +1,10 @@
 import fetch from "node-fetch";
 import {Listing, WillhabenSearchResult} from "../types/searchResult.types.js";
 import {Category} from "../../../shared-types/index.types.js";
+import {getAttributeValue} from "./searchAgentService.js";
+import {Impit, ImpitResponse} from "impit";
+
+const MAX_LOADABLE_WILLHABEN_ROWS = 200; // Willhaben limits the maximum loadable rows to 200, even if more are available. This is a hard limit and cannot be bypassed by changing the URL parameters.
 
 const CATEGORIES_SITEMAP_URL = "https://www.willhaben.at/sitemap/sitemapindex-marktplatz-kategorien.xml";
 
@@ -66,9 +70,32 @@ const parseCategoryFromUrl = (url: string): Category | null => {
     return {url, id, name,};
 }
 
-export const getNewListings = async (): Promise<Listing[]> => {
-    return getListings(WANTED_BASE_URL+ "?rows=1000"); // fetch maximum listings (currently 200)
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const getNewListings = async (maxListingAgeMinutes: number): Promise<Listing[]> => {
+    const listings: Listing[][] = [];
+    const fallbackMaxPages = 5000 / MAX_LOADABLE_WILLHABEN_ROWS;
+
+    const maxAgeTimestamp = Date.now() - maxListingAgeMinutes * 60 * 1000;
+    console.log(`Fetching new listings from Willhaben. Max listing age: ${maxListingAgeMinutes} minutes (timestamp: ${maxAgeTimestamp}). Starting with page 1...`);
+    let lastTimestamp: number = Date.now();
+    for (let page = 1; page <= fallbackMaxPages && lastTimestamp > maxAgeTimestamp; page++) {
+        listings.push(await getListings(WANTED_BASE_URL + `?rows=${MAX_LOADABLE_WILLHABEN_ROWS}&page=${page}`));
+        lastTimestamp = parseInt(getAttributeValue(listings[listings.length - 1][listings[listings.length - 1].length - 1], "PUBLISHED")!) || lastTimestamp;
+        console.log(`Fetched page ${page}. Last listing timestamp: ${lastTimestamp}`);
+        await sleep(Math.random() * 2000 + 1000); // Sleep between 1-3 seconds to avoid hitting rate limits
+    }
+    return listings.flat();
 };
+
+const fetchWillhabenPage = async (url: string): Promise<ImpitResponse> => {
+    const impit = new Impit({
+        browser: "chrome", // or "firefox"
+        //proxyUrl: "http://localhost:8080",
+        ignoreTlsErrors: true,
+    });
+    return await impit.fetch(url);
+}
 
 /**
  * Fetches a Willhaben search results page and extracts the listings
@@ -77,7 +104,7 @@ export const getNewListings = async (): Promise<Listing[]> => {
  * @author Christian Proschek (https://github.com/CP02A/willhaben)
  */
 export const getListings = async (url: string): Promise<Listing[]> => {
-    const response = await fetch(url);
+    const response = await fetchWillhabenPage(url);
 
     if (!response.ok) {
         throw new Error(`Failed to fetch URL. HTTP Status: ${response.status}`);

@@ -9,9 +9,13 @@ import {UserMatches} from "../types/match.types.js";
 import {HttpsError} from "firebase-functions/https";
 import {onDocumentDeleted} from "firebase-functions/firestore";
 
-export const updateFindings = onSchedule("every 5 minutes", async () => {
+const SEARCH_AGENT_INTERVAL = 5; // minutes
+const MAX_LISTINGS_AGE_TO_CHECK = 2 * SEARCH_AGENT_INTERVAL; // minutes, check listings from the last 2 intervals to avoid missing matches due to willhaben indeterminism of listings
+
+export const updateFindings = onSchedule(`*/${SEARCH_AGENT_INTERVAL} * * * *`, async () => {
     try {
-        const currentListing: Listing[] = await getNewListings();
+        const currentListing: Listing[] = await getNewListings(MAX_LISTINGS_AGE_TO_CHECK);
+        console.log(`Search Agent Update started. Checking ${currentListing.length} new listings against user queries...`);
         const querySnapshot = await db.collectionGroup('queries').get();
 
         const batch = db.batch();
