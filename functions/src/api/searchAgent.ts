@@ -9,8 +9,8 @@ import {UserMatches} from "../types/match.types.js";
 import {HttpsError} from "firebase-functions/https";
 import {onDocumentDeleted} from "firebase-functions/firestore";
 
-const SEARCH_AGENT_INTERVAL = 5; // minutes
-const MAX_LISTINGS_AGE_TO_CHECK = 2 * SEARCH_AGENT_INTERVAL; // minutes, check listings from the last 2 intervals to avoid missing matches due to willhaben indeterminism of listings
+const SEARCH_AGENT_INTERVAL = 2; // minutes
+const MAX_LISTINGS_AGE_TO_CHECK = 10 * SEARCH_AGENT_INTERVAL; // minutes, check listings from the last 2 intervals to avoid missing matches due to willhaben indeterminism of listings
 
 export const updateFindings = onSchedule(`*/${SEARCH_AGENT_INTERVAL} * * * *`, async () => {
     try {
