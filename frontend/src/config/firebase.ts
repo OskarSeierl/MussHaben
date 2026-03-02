@@ -3,6 +3,7 @@ import {connectAuthEmulator, getAuth } from 'firebase/auth';
 import {connectFirestoreEmulator, initializeFirestore, persistentLocalCache } from "firebase/firestore";
 import {connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { getMessaging } from "firebase/messaging";
+import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -22,6 +23,7 @@ export const db = initializeFirestore(app, {
   localCache: persistentLocalCache()
 });
 export const functions = getFunctions(app);
+getAnalytics(app);
 
 if (import.meta.env.DEV) {
   connectAuthEmulator(auth, "http://127.0.0.1:9099");
