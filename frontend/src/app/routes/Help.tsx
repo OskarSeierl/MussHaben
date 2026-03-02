@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Stack, Typography} from "@mui/material";
+import {Alert, Box, Stack, Typography} from "@mui/material";
 import BulkHelpImage from "../../assets/help/bulk.png";
 import SingleHelpImage from "../../assets/help/single.png";
 
@@ -22,18 +22,22 @@ const Help: React.FC = () => {
             <Typography>
                 MussHaben sendet eine Anfrage um alle neuesten Anzeigen seid der letzten Aktualisierung zu bekommen.
                 Diese Methode sendet somit nur eine Anfrage für alle SuchAgenten und ist damit sehr effizient.
+            </Typography>
+            <Alert severity="warning">
                 Aufgrund des Empfehlungs-Algorithmus von Willhaben ist es so nur schwer möglich alle neuen Anzeigen lückenlos zu bekommen da die Anfragen nicht determinitisch sind.
                 Somit kann es vorkommen, dass MussHaben manche neuen Anzeigen nicht findet, wenn diese nicht in den ersten Ergebnissen der Suche auftauchen.
-            </Typography>
+            </Alert>
             <Typography variant="h6">Einzelne Anfragen</Typography>
             <Box sx={{maxWidth: 600}}>
                 <img style={{width: "100%"}} alt="Einzelne Anfragen Architektur" src={SingleHelpImage} />
             </Box>
             <Typography>
                 Bei dieser Methode sendet MussHaben für jeden SuchAgent eine eigene Anfrage, um die neuesten Anzeigen zu bekommen.
+            </Typography>
+            <Alert severity="info">
                 Da bei dieser Methode eine eingeschränktere Anzahl von Anzeigen abgerufen wird, sind bei geringer Ergebniszahl die Suchabfragen determinitisch.
                 Somit werden alle neuen Anzeigen gefunden, wenn diese in den ersten Ergebnissen der Suche auftauchen.
-            </Typography>
+            </Alert>
         </Stack>
     );
 };
