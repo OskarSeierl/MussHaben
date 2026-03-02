@@ -25,14 +25,23 @@ service cloud.firestore {
             // Rules for the nested 'queries' subcollection
             match /queries/{queryId} {
                 // Allow users to read, update, and delete their own queries
-                allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+                allow read, delete: if request.auth != null && request.auth.uid == userId;
 
                 // Creation logic (Free vs Premium)
                 allow create: if request.auth != null && request.auth.uid == userId
                     && (
-                    get(/databases/$(database)/documents/users/$(userId)).data.isPremium == true
-                    || get(/databases/$(database)/documents/users/$(userId)).data.queryCount < 1
-                );
+                        get(/databases/$(database)/documents/users/$(userId)).data.isPremium == true
+                        || (
+                            get(/databases/$(database)/documents/users/$(userId)).data.queryCount < 1
+                            && request.resource.data.specificRequest == false
+                        )
+                    );
+
+                allow update: if request.auth != null && request.auth.uid == userId
+                    && (
+                        get(/databases/$(database)/documents/users/$(userId)).data.isPremium == true
+                        || request.resource.data.specificRequest == false
+                    );
 
                 match /matches/{matchId} {
                     allow read: if request.auth != null && request.auth.uid == userId;

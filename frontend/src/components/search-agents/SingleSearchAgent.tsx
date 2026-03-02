@@ -20,6 +20,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import PublicIcon from '@mui/icons-material/Public';
 import EuroIcon from '@mui/icons-material/Euro';
 import InboxIcon from '@mui/icons-material/Inbox';
+import SendIcon from '@mui/icons-material/Send';
 import {Link} from 'react-router-dom';
 import {collection, getDocs, orderBy, query} from 'firebase/firestore';
 import {db} from '../../config/firebase.ts';
@@ -80,6 +81,7 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
     const minPriceLabel = data.minPrice ?? '--';
     const maxPriceLabel = data.maxPrice ?? '--';
     const stateLabel = data.state || 'Alle Bundesländer';
+    const specificRequestLabel = data.specificRequest ? 'Spezifische Anfrage' : 'Allgemeine Anfrage';
 
     return (
         <Accordion expanded={isExpanded} onChange={handleAccordionChange}>
@@ -122,6 +124,12 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
                             variant="outlined"
                             icon={<PublicIcon/>}
                             label={stateLabel}
+                        />
+                        <Chip
+                            size="small"
+                            variant="outlined"
+                            icon={<SendIcon/>}
+                            label={specificRequestLabel}
                         />
                     </Stack>
                 </Stack>

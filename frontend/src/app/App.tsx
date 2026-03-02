@@ -15,6 +15,7 @@ import SearchAgent from "./routes/SearchAgent.tsx";
 import {QueryIdExists} from "../components/guards/QueryIdExists.tsx";
 import {UserQueriesProvider} from "../context/UserQueriesProvider.tsx";
 import {CategoriesProvider} from "../context/CategoriesProvider.tsx";
+import Help from "./routes/Help.tsx";
 
 function App() {
     return (
@@ -43,6 +44,7 @@ function App() {
                                             </Route>
                                         </Route>
                                     </Route>
+                                    <Route path="/help" element={<Help/>}/>
                                     <Route path="/profile" element={<Profile/>}/>
                                 </Route>
                             </Route>

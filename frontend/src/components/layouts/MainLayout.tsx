@@ -7,7 +7,7 @@ import {
     useTheme
 } from "@mui/material";
 import React from 'react';
-import {Outlet} from "react-router-dom";
+import {Link, Outlet} from "react-router-dom";
 import {Navbar} from "../navigation/Navbar.tsx";
 import {BottomNavbar} from "../navigation/BottomNavbar.tsx";
 import {Footer} from "../Footer.tsx";
@@ -27,7 +27,11 @@ export const MainLayout: React.FC = () => {
                 !userData?.isPremium && (
                     <Alert severity="info" sx={{mt: [1, 3]}}>
                         MussHaben ist ein reines Hobbyprojekt und ist nicht für kommerziellen Nutzen gebaut.
-                        Aufgrunddessen ist die Anzahl der Such-Agenten pro Nutzer auf 1 begrenzt.
+                        Aufgrunddessen:
+                        <ul>
+                            <li>ist die Anzahl der Such-Agenten pro Nutzer auf 1 begrenzt</li>
+                            <li>wird eine ungenaue Abfragetechnik verwendet (siehe <Link to="/help">Hilfe</Link>)</li>
+                        </ul>
                     </Alert>
                 )
             }

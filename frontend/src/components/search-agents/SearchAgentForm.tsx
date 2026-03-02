@@ -3,17 +3,20 @@ import {
     Box,
     Button,
     Card,
-    FormControl, FormHelperText,
+    Checkbox,
+    FormControl, FormControlLabel, FormHelperText,
     InputLabel,
     MenuItem,
     Select,
     type SelectChangeEvent,
     Stack,
-    TextField
+    TextField, Typography
 } from "@mui/material";
 import CategorySelector, {MAX_CATEGORY_SELECTION} from "./CategorySelector.tsx";
 import {type NewQueryData} from "../../types/query.types.ts";
 import {type SearchQuery, State} from "../../../../shared-types/index.types.ts";
+import {Link} from "react-router-dom";
+import {useAuth} from "../../hooks/useAuth.ts";
 
 interface Props {
     buttonText: string;
@@ -22,6 +25,8 @@ interface Props {
 }
 
 export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSubmit}: Props) => {
+    const {userData} = useAuth();
+
     const [formData, setFormData] = useState<NewQueryData>(defaultData || {
         name: "",
         categories: [],
@@ -29,6 +34,7 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
         state: undefined,
         minPrice: undefined,
         maxPrice: undefined,
+        specificRequest: false
     });
 
     const handleCategoryChange = (categories: number[]) => {
@@ -62,6 +68,14 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
         }
         setFormData(formDataCopy);
     };
+
+    const handleSpecificRequestChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const checked = event.target.checked;
+        setFormData(prev => ({
+            ...prev,
+            specificRequest: checked
+        }));
+    }
 
     const handleSubmit = (event: React.SubmitEvent) => {
         event.preventDefault();
@@ -148,6 +162,16 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
                             helperText="Optional"
                         />
                     </Stack>
+
+                    <FormControlLabel
+                        value="end"
+                        control={
+                            <Checkbox checked={formData.specificRequest} onChange={handleSpecificRequestChange} />
+                        }
+                        label={<Typography>Spezifische Abfrage verwenden (siehe <Link to="/help">Hilfe</Link>)</Typography>}
+                        labelPlacement="end"
+                        disabled={!userData?.isPremium}
+                    />
 
                     <Button
                         type="submit"

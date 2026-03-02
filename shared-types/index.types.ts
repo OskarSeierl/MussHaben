@@ -24,6 +24,7 @@ export interface SearchQuery {
     state?: State;
     minPrice?: number;
     maxPrice?: number;
+    specificRequest: boolean;
     createdAt: Date; // timestamp
 }
 
