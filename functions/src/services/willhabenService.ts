@@ -1,8 +1,9 @@
 import fetch from "node-fetch";
 import {Listing, WillhabenSearchResult} from "../types/searchResult.types.js";
-import {Category} from "../../../shared-types/index.types.js";
+import {Category, SearchQuery} from "../shared/shared.types.js";
 import {getAttributeValue} from "./searchAgentService.js";
 import {Impit, ImpitResponse} from "impit";
+import {sleep} from "../utils/timeUtils.js";
 
 const MAX_LOADABLE_WILLHABEN_ROWS = 200; // Willhaben limits the maximum loadable rows to 200, even if more are available. This is a hard limit and cannot be bypassed by changing the URL parameters.
 
@@ -70,17 +71,41 @@ const parseCategoryFromUrl = (url: string): Category | null => {
     return {url, id, name,};
 }
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const getWillhabenUrl = (category?: number, areaId?: number, keyword?: string, minPrice?: number, maxPrice?: number): string => {
+    const path = category !== undefined ? `/-${category}` : "";
 
-export const getNewListings = async (maxListingAgeMinutes: number): Promise<Listing[]> => {
+    const params = new URLSearchParams();
+    params.append("rows", String(MAX_LOADABLE_WILLHABEN_ROWS));
+    if (areaId !== undefined) params.append("areaId", String(areaId));
+    if (keyword) params.append("keyword", keyword);
+    if (minPrice !== undefined) params.append("PRICE_FROM", String(minPrice));
+    if (maxPrice !== undefined) params.append("PRICE_TO", String(maxPrice));
+
+    return `${WANTED_BASE_URL}${path}?${params.toString()}`;
+};
+
+export const getNewListingsFromAgent = async (data: SearchQuery, maxListingAgeMinutes: number): Promise<Listing[]> => {
     const listings: Listing[][] = [];
-    const fallbackMaxPages = 5000 / MAX_LOADABLE_WILLHABEN_ROWS;
+    for(const category of data.categories) {
+        const url = getWillhabenUrl(category, data.state, data.keyword, data.minPrice, data.maxPrice);
+        listings.push(await getNewListings(url, maxListingAgeMinutes));
+    }
+    return listings.flat();
+};
+
+export const getNewListingsFromAll = async (maxListingAgeMinutes: number): Promise<Listing[]> => {
+    return getNewListings(getWillhabenUrl(), maxListingAgeMinutes);
+};
+
+const getNewListings = async (url: string, maxListingAgeMinutes: number): Promise<Listing[]> => {
+    const listings: Listing[][] = [];
+    const fallbackMaxPages = 10000 / MAX_LOADABLE_WILLHABEN_ROWS;
 
     const maxAgeTimestamp = Date.now() - maxListingAgeMinutes * 60 * 1000;
-    console.log(`Fetching new listings from Willhaben. Max listing age: ${maxListingAgeMinutes} minutes (timestamp: ${maxAgeTimestamp}). Starting with page 1...`);
+    console.log(`Fetching new listings from Willhaben (${url}). Max listing age: ${maxListingAgeMinutes} minutes (timestamp: ${maxAgeTimestamp}). Starting with page 1...`);
     let lastTimestamp: number = Date.now();
     for (let page = 1; page <= fallbackMaxPages && lastTimestamp > maxAgeTimestamp; page++) {
-        listings.push(await getListings(WANTED_BASE_URL + `?rows=${MAX_LOADABLE_WILLHABEN_ROWS}&page=${page}`));
+        listings.push(await getListings(url + `&page=${page}`));
         lastTimestamp = parseInt(getAttributeValue(listings[listings.length - 1][listings[listings.length - 1].length - 1], "PUBLISHED")!) || lastTimestamp;
         console.log(`Fetched page ${page}. Last listing timestamp: ${lastTimestamp}`);
         await sleep(Math.random() * 2000 + 1000); // Sleep between 1-3 seconds to avoid hitting rate limits

@@ -5,15 +5,15 @@ export interface Category {
 }
 
 export enum State {
-    WIEN = "Wien",
-    NIEDEROESTERREICH = "Niederoesterreich",
-    OBEROESTERREICH = "Oberoesterreich",
-    STEIERMARK = "Steiermark",
-    KAERNTEN = "Kaernten",
-    SALZBURG = "Salzburg",
-    TIROL = "Tirol",
-    VORARLBERG = "Vorarlberg",
-    BURGENLAND = "Burgenland",
+    WIEN = 900,
+    NIEDEROESTERREICH = 3,
+    OBEROESTERREICH = 4,
+    STEIERMARK = 6,
+    KAERNTEN = 2,
+    SALZBURG = 5,
+    TIROL = 7,
+    VORARLBERG = 8,
+    BURGENLAND = 1,
 }
 
 export interface SearchQuery {

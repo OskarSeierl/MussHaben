@@ -1,4 +1,4 @@
-import type {Category} from "../../../shared-types/index.types.ts";
+import type {Category} from "../../../functions/src/shared/shared.types.ts";
 
 export interface CategoryOption {
   label: string;

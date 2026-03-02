@@ -1,5 +1,5 @@
 import {onCall} from "firebase-functions/https";
-import {SearchQuery, type State} from "../../../shared-types/index.types.js";
+import {SearchQuery, State} from "../shared/shared.types.js";
 import {getListings} from "../services/willhabenService.js";
 import {Listing} from "../types/searchResult.types.js";
 import {doesListingMatchQuery} from "../services/searchAgentService.js";
@@ -11,9 +11,10 @@ export const testListingMatching = onCall(async () => {
         name: "Plant Query",
         categories: [3724, 3729, 3728],
         keyword: undefined,
-        state: "Wien" as State,
+        state: State.WIEN,
         minPrice: 0,
         maxPrice: 0,
+        specificRequest: true,
         createdAt: new Date(),
     }
 

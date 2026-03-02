@@ -15,7 +15,7 @@ import React, {useEffect, useState} from "react";
 import {db} from "../config/firebase.ts";
 import {useAuth} from "../hooks/useAuth.ts";
 import {Outlet} from "react-router-dom";
-import type {SearchQuery} from "../../../shared-types/index.types.ts";
+import type {SearchQuery} from "../../../functions/src/shared/shared.types.ts";
 
 const getUserQueriesRef = (userId: string) => collection(db, 'users', userId, 'queries');
 const getUserQueryRef = (userId: string, queryId: string) => doc(db, 'users', userId, 'queries', queryId);

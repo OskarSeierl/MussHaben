@@ -1,4 +1,4 @@
-import type {SearchQuery} from "../../../shared-types/index.types.ts";
+import type {SearchQuery} from "../../../functions/src/shared/shared.types.ts";
 
 export type NewQueryData = Omit<SearchQuery, 'id' | 'createdAt'>;
 

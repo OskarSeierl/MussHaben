@@ -1,7 +1,8 @@
 import {Listing} from "../types/searchResult.types.js";
-import {SearchQuery} from "../../../shared-types/index.types.js";
+import {SearchQuery} from "../shared/shared.types.js";
 import {getMessaging} from "firebase-admin/messaging";
 import {UserMatch} from "../types/match.types.js";
+import {stateMapping} from "../shared/sharedUtils.js";
 
 export const getAttributeValue = (listing: Listing, attributeName: string): string | undefined => {
     const attribute = listing.attributes?.attribute.find(attr => attr.name === attributeName);
@@ -21,7 +22,7 @@ export const doesListingMatchQuery = (listing: Listing, query: SearchQuery): boo
 
     // Check state
     const listingState = getAttributeValue(listing, "STATE") || "";
-    if(query.state && normalizeString(listingState) !== normalizeString(query.state)) {
+    if(query.state && normalizeString(listingState) !== normalizeString(stateMapping[query.state])) {
         return false;
     }
 

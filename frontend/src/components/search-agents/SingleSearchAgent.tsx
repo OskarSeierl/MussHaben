@@ -29,9 +29,10 @@ import {useUserQueries} from "../../hooks/useUserQueries.ts";
 import {useInfo} from "../../hooks/useInfo.ts";
 import {useAuth} from "../../hooks/useAuth.ts";
 import {useCategories} from "../../hooks/useCategories.ts";
-import type {Match, SearchQuery} from "../../../../shared-types/index.types.ts";
+import type {Match, SearchQuery} from "../../../../functions/src/shared/shared.types.ts";
 import {MatchCard} from "./MatchCard.tsx";
 import {Timestamp} from 'firebase/firestore';
+import {stateMapping} from "../../../../functions/src/shared/sharedUtils.ts";
 
 interface Props {
     data: SearchQuery;
@@ -80,7 +81,7 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
     const categoryLabel = data.categories.length + " Kategorie(n)";
     const minPriceLabel = data.minPrice ?? '--';
     const maxPriceLabel = data.maxPrice ?? '--';
-    const stateLabel = data.state || 'Alle Bundesländer';
+    const stateLabel = data.state ? stateMapping[data.state] : 'Alle Bundesländer';
     const specificRequestLabel = data.specificRequest ? 'Spezifische Anfrage' : 'Allgemeine Anfrage';
 
     return (

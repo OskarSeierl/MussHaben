@@ -1,28 +1,42 @@
 import {onSchedule} from "firebase-functions/v2/scheduler";
-import {getNewListings} from "../services/willhabenService.js";
+import {getNewListingsFromAgent, getNewListingsFromAll} from "../services/willhabenService.js";
 import {Listing} from "../types/searchResult.types.js";
 import {db} from "../index.js";
 import {doesListingMatchQuery, getAttributeValue, sendMatchNotification} from "../services/searchAgentService.js";
-import {Match, SearchQuery} from "../../../shared-types/index.types.js";
+import {Match, SearchQuery} from "../shared/shared.types.js";
 import {Timestamp} from "firebase-admin/firestore";
 import {UserMatches} from "../types/match.types.js";
 import {HttpsError} from "firebase-functions/https";
 import {onDocumentDeleted} from "firebase-functions/firestore";
 
-const SEARCH_AGENT_INTERVAL = 2; // minutes
-const MAX_LISTINGS_AGE_TO_CHECK = 10 * SEARCH_AGENT_INTERVAL; // minutes, check listings from the last 2 intervals to avoid missing matches due to willhaben indeterminism of listings
+const SEARCH_AGENT_INTERVAL = 5; // minutes
+const MAX_LISTINGS_AGE_TO_CHECK = 3 * SEARCH_AGENT_INTERVAL; // minutes, check listings from the last 2 intervals to avoid missing matches due to willhaben indeterminism of listings
 
 export const updateFindings = onSchedule(`*/${SEARCH_AGENT_INTERVAL} * * * *`, async () => {
     try {
-        const currentListing: Listing[] = await getNewListings(MAX_LISTINGS_AGE_TO_CHECK);
-        console.log(`Search Agent Update started. Checking ${currentListing.length} new listings against user queries...`);
+        console.log(`Starting Search Agent Update. Fetching new listings from the last ${MAX_LISTINGS_AGE_TO_CHECK} minutes...`);
+
+        const currentListings: Listing[] = await getNewListingsFromAll(MAX_LISTINGS_AGE_TO_CHECK);
+        const specificRequestListings: Listing[][] = [];
+
         const querySnapshot = await db.collectionGroup('queries').get();
+
+        for (const query of querySnapshot.docs) {
+            const queryData = query.data() as SearchQuery;
+            if(queryData.specificRequest) {
+                specificRequestListings.push(await getNewListingsFromAgent(queryData, MAX_LISTINGS_AGE_TO_CHECK));
+            }
+        }
+
+        const allFetchedListings = currentListings.concat(specificRequestListings.flat());
+
+        console.log(`All listings fetched. Checking ${currentListings.length} new listings against user queries...`);
 
         const batch = db.batch();
         const userMatches: UserMatches = {};
 
         for (const query of querySnapshot.docs) {
-            for (const listing of currentListing) {
+            for (const listing of allFetchedListings) {
                 const queryUserId = query.ref.parent.parent?.id;
                 if (queryUserId) { // should be defined normally, but just to be safe
                     const queryData = query.data() as SearchQuery;

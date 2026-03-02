@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import CategorySelector, {MAX_CATEGORY_SELECTION} from "./CategorySelector.tsx";
 import {type NewQueryData} from "../../types/query.types.ts";
-import {type SearchQuery, State} from "../../../../shared-types/index.types.ts";
+import {type SearchQuery, State} from "../../../../functions/src/shared/shared.types.ts";
 import {Link} from "react-router-dom";
 import {useAuth} from "../../hooks/useAuth.ts";
 
@@ -44,11 +44,11 @@ export const SearchAgentForm: React.FC<Props> = ({buttonText, defaultData, onSub
         }));
     };
 
-    const handleStateChange = (event: SelectChangeEvent) => {
-        const value = event.target.value as State;
+    const handleStateChange = (event: SelectChangeEvent<State>) => {
+        const value = event.target.value;
         setFormData(prev => ({
             ...prev,
-            state: value.length === 0 ? undefined : value
+            state: value
         }));
     };
 

@@ -1,4 +1,4 @@
-import type {Match} from "../../../../shared-types/index.types.ts";
+import type {Match} from "../../../../functions/src/shared/shared.types.ts";
 import React from "react";
 import {Card, CardActionArea, CardContent, CardMedia, Chip, Stack, Typography} from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";

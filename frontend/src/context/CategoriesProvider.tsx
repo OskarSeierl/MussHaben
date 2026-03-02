@@ -3,7 +3,7 @@ import type {CategoriesContextType, WillhabenData} from "../types/category.types
 import {getCategories} from "../config/api.ts";
 import {CategoriesContext} from "./CategoriesContext.ts";
 import { Outlet } from "react-router-dom";
-import type {Category} from "../../../shared-types/index.types.ts";
+import type {Category} from "../../../functions/src/shared/shared.types.ts";
 import {doc, type DocumentReference} from "firebase/firestore";
 import {db} from "../config/firebase.ts";
 import {fetchDocumentWithCache} from "../utils/firestoreCacheUtils.ts";

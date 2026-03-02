@@ -1,5 +1,5 @@
 import {db} from "../index.js";
-import {Category} from "../../../shared-types/index.types.js";
+import {Category} from "../shared/shared.types.js";
 
 export const cacheCategories = async (categories: Category[]) => {
     await db.doc('appData/willhabenMetadata').set({

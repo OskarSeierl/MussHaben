@@ -1,5 +1,5 @@
 import {DocumentReference, getDocFromCache, getDocFromServer,} from 'firebase/firestore';
-import type {WithId} from "../../../shared-types/index.types.ts";
+import type {WithId} from "../../../functions/src/shared/shared.types.ts";
 
 /**
  * Fetches a Firestore document using a local cache-first strategy with a TTL.
