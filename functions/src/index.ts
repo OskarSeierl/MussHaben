@@ -9,6 +9,10 @@ setGlobalOptions({ maxInstances: 10 });
 // Export firebase instances
 export const db = getFirestore();
 
+db.settings({
+    ignoreUndefinedProperties: true,
+});
+
 // Export API endpoints
 export { getCategories, updateWillhabenCategories } from "./api/categories.js";
 export { updateFindings, deleteMatchesOnQueryDelete } from "./api/searchAgent.js";

@@ -1,11 +1,10 @@
 import {onCall} from "firebase-functions/https";
 import {SearchQuery, State} from "../shared/shared.types.js";
-import {getListings} from "../services/willhabenService.js";
+import {getNewListingsFromAgent} from "../services/willhabenService.js";
 import {Listing} from "../types/searchResult.types.js";
 import {doesListingMatchQuery} from "../services/searchAgentService.js";
 
 export const testListingMatching = onCall(async () => {
-    const url: string = "https://www.willhaben.at/iad/kaufen-und-verkaufen/marktplatz/dekoration/zimmerpflanzen-5463?areaId=900&rows=30&PRICE_FROM=0&PRICE_TO=0";
     const query: SearchQuery = {
         id: "test-query-id",
         name: "Plant Query",
@@ -18,7 +17,7 @@ export const testListingMatching = onCall(async () => {
         createdAt: new Date(),
     }
 
-    const listings: Listing[] = await getListings(url);
+    const listings: Listing[] = await getNewListingsFromAgent(query, 120);
 
     const matchResults = [];
 

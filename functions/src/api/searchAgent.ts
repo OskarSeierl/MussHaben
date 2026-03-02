@@ -56,7 +56,7 @@ export const updateFindings = onSchedule(`*/${SEARCH_AGENT_INTERVAL} * * * *`, a
 
                             batch.set(matchRef, {
                                 description: listing.description,
-                                imageUrl: listing.advertImageList.advertImage[0].thumbnailImageUrl,
+                                imageUrl: listing.advertImageList.advertImage.length > 0 ? listing.advertImageList.advertImage[0].thumbnailImageUrl : undefined,
                                 price: parseFloat(getAttributeValue(listing, "PRICE") || "0"),
                                 link: listing.contextLinkList.contextLink.find(link => link.id === "iadShareLink")?.uri || "",
                                 timestamp: Timestamp.now(),
