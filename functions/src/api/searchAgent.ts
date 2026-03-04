@@ -54,12 +54,15 @@ export const updateFindings = onSchedule(`*/${SEARCH_AGENT_INTERVAL} * * * *`, a
                             }
                             userMatches[queryUserId][queryData.name].push(listing.id);
 
+                            const uploadedAt = getAttributeValue(listing, "PUBLISHED");
+
                             batch.set(matchRef, {
                                 description: listing.description,
                                 imageUrl: listing.advertImageList.advertImage.length > 0 ? listing.advertImageList.advertImage[0].thumbnailImageUrl : undefined,
                                 price: parseFloat(getAttributeValue(listing, "PRICE") || "0"),
                                 link: listing.contextLinkList.contextLink.find(link => link.id === "iadShareLink")?.uri || "",
-                                timestamp: Timestamp.now(),
+                                foundAt: Timestamp.now(),
+                                uploadedAt: uploadedAt ? Timestamp.fromMillis(parseInt(uploadedAt)) : undefined,
                                 expireAt: Timestamp.fromDate(new Date(Date.now() + 24 * 60 * 60 * 1000)), // expire after 1 day
                             } as Match<Timestamp>);
                         }

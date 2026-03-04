@@ -33,7 +33,8 @@ export interface Match<T = Date> {
     imageUrl: string;
     price: number;
     link: string;
-    timestamp: T;
+    foundAt: T;
+    uploadedAt: T;
     expireAt: T;
 }
 

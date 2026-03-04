@@ -4,6 +4,7 @@ import {Card, CardActionArea, CardContent, CardMedia, Chip, Stack, Typography} f
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import EuroIcon from "@mui/icons-material/Euro";
 import { Timestamp } from 'firebase/firestore';
+import {millisToDateTime, millisToDuration} from "../../utils/timeUtils.ts";
 
 interface Props {
     match: Match<Timestamp>;
@@ -36,10 +37,8 @@ export const MatchCard: React.FC<Props> = ({ match }) => {
                                     sx={{ alignSelf: 'flex-start' }}
                                 />
                                 <Typography variant="caption" color="text.secondary">
-                                    Gefunden: {new Date(match.timestamp.seconds * 1000).toLocaleDateString('de-AT', {
-                                    day: '2-digit', month: '2-digit', year: 'numeric',
-                                    hour: '2-digit', minute: '2-digit',
-                                })}
+                                    Hochgeladen: {  millisToDateTime(match.uploadedAt.toMillis()) }
+                                    Gefunden nach { millisToDuration(match.foundAt.toMillis() - match.uploadedAt.toMillis()) } um {  millisToDateTime(match.foundAt.toMillis()) }
                                 </Typography>
                             </Stack>
                         </Stack>
