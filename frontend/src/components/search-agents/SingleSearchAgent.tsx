@@ -48,15 +48,18 @@ export const SingleSearchAgent: React.FC<Props> = ({data}) => {
     const [matchesLoading, setMatchesLoading] = useState<boolean>(false);
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
+    console.log(matches);
+
     const handleAccordionChange = async (_event: React.SyntheticEvent, expanded: boolean) => {
         setIsExpanded(expanded);
 
-        if (expanded && matches === undefined && user) {
+        if (expanded && user) {
             setMatchesLoading(true);
             try {
                 const matchesRef = collection(db, `users/${user.uid}/queries/${data.id}/matches`);
-                const matchesQuery = query(matchesRef, orderBy('timestamp', 'desc'));
+                const matchesQuery = query(matchesRef, orderBy('foundAt' as keyof Match, 'desc'));
                 const matchesSnapshot = await getDocs(matchesQuery);
+                console.log(matchesSnapshot.size);
                 const loadedMatches = matchesSnapshot.docs.map(doc => doc.data() as Match<Timestamp>);
                 setMatches(loadedMatches);
             } catch (error) {
