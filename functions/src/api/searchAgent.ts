@@ -6,13 +6,16 @@ import {doesListingMatchQuery, getAttributeValue, sendMatchNotification} from ".
 import {Match, SearchQuery} from "../shared/shared.types.js";
 import {Timestamp} from "firebase-admin/firestore";
 import {UserMatches} from "../types/match.types.js";
-import {HttpsError} from "firebase-functions/https";
 import {onDocumentDeleted} from "firebase-functions/firestore";
 
 const SEARCH_AGENT_INTERVAL = 5; // minutes
 const MAX_LISTINGS_AGE_TO_CHECK = 3 * SEARCH_AGENT_INTERVAL; // minutes, check listings from the last 2 intervals to avoid missing matches due to willhaben indeterminism of listings
 
-export const updateFindings = onSchedule(`*/${SEARCH_AGENT_INTERVAL} * * * *`, async () => {
+export const updateFindings = onSchedule({
+    schedule: `*/${SEARCH_AGENT_INTERVAL} * * * *`,
+    timeoutSeconds: 300, // 5 minutes
+    memory: "256MiB"
+}, async () => {
     try {
         console.log(`Starting Search Agent Update. Fetching new listings from the last ${MAX_LISTINGS_AGE_TO_CHECK} minutes...`);
 
@@ -73,6 +76,7 @@ export const updateFindings = onSchedule(`*/${SEARCH_AGENT_INTERVAL} * * * *`, a
 
         if (Object.keys(userMatches).length > 0) {
             await batch.commit();
+            console.log("New matches successfully committed to Firestore.");
         }
 
         for (const userId in userMatches) {
@@ -86,12 +90,6 @@ export const updateFindings = onSchedule(`*/${SEARCH_AGENT_INTERVAL} * * * *`, a
         console.log(`Search Agent Update completed. New matches found: ${JSON.stringify(userMatches)}`);
     } catch (error) {
         console.error("Error during Search Agent Update:", error);
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        throw new HttpsError(
-            "internal",
-            "Failed to fetch categories",
-            errorMessage,
-        );
     }
 });
 

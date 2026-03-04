@@ -105,19 +105,24 @@ const getNewListings = async (url: string, maxListingAgeMinutes: number): Promis
     console.log(`Fetching new listings from Willhaben (${url}). Max listing age: ${maxListingAgeMinutes} minutes (timestamp: ${maxAgeTimestamp}). Starting with page 1...`);
     let lastTimestamp: number = Date.now();
     for (let page = 1; page <= fallbackMaxPages && lastTimestamp > maxAgeTimestamp; page++) {
-        const pageListings: Listing[] = await getListings(url + `&page=${page}`);
-        lastTimestamp = parseInt(getAttributeValue(pageListings[pageListings.length - 1], "PUBLISHED")!) || lastTimestamp;
+        try {
+            const pageListings: Listing[] = await getListings(url + `&page=${page}`);
+            lastTimestamp = parseInt(getAttributeValue(pageListings[pageListings.length - 1], "PUBLISHED")!) || lastTimestamp;
 
-        if (lastTimestamp <= maxAgeTimestamp) {
-            listings.push(pageListings.filter(listing => {
-                const listingTimestamp = parseInt(getAttributeValue(listing, "PUBLISHED")!);
-                return listingTimestamp > maxAgeTimestamp;
-            }));
-        } else {
-            listings.push(pageListings);
+            if (lastTimestamp <= maxAgeTimestamp) {
+                listings.push(pageListings.filter(listing => {
+                    const listingTimestamp = parseInt(getAttributeValue(listing, "PUBLISHED")!);
+                    return listingTimestamp > maxAgeTimestamp;
+                }));
+            } else {
+                listings.push(pageListings);
+            }
+            console.log(`Fetched page ${page}. Last listing timestamp: ${lastTimestamp}`);
+        } catch {
+            console.error(`Error fetching page ${page}`);
+        } finally {
+            await sleep(Math.random() * 2000 + 1000); // Sleep between 1-3 seconds to avoid hitting rate limits
         }
-        console.log(`Fetched page ${page}. Last listing timestamp: ${lastTimestamp}`);
-        await sleep(Math.random() * 2000 + 1000); // Sleep between 1-3 seconds to avoid hitting rate limits
     }
     return listings.flat();
 };
