@@ -17,8 +17,7 @@ import {
     ListItemText,
     Button,
     Stack,
-    Paper,
-    Chip, Link, Dialog, DialogTitle, DialogContent, DialogActions
+    Chip, Dialog, DialogTitle, DialogContent, DialogActions
 } from "@mui/material";
 import {
     Email as EmailIcon,
@@ -30,7 +29,7 @@ import {
     Delete as DeleteIcon,
     WorkspacePremium as WorkspacePremiumIcon
 } from '@mui/icons-material';
-import packageJson from '../../../package.json';
+import VersionInfo from '../../components/VersionInfo';
 
 const Profile: React.FC = () => {
     const {user, userData} = useAuth();
@@ -220,23 +219,7 @@ const Profile: React.FC = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-
-            <Paper
-                elevation={0}
-                sx={{
-                    p: 2,
-                    bgcolor: 'grey.50',
-                    textAlign: 'center'
-                }}
-            >
-                <Typography variant="body2" color="text.secondary">
-                    MussHaben
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                    <Link href="https://github.com/OskarSeierl/MussHaben">https://github.com/OskarSeierl/MussHaben</Link> |
-                    Version {packageJson.version}
-                </Typography>
-            </Paper>
+            <VersionInfo/>
         </Stack>
     );
 };

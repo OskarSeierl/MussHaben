@@ -1,11 +1,9 @@
-import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
-import {ProtectedRoute} from '../components/guards/ProtectedRoute.tsx';
-import Welcome from './routes/Welcome.tsx';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+/*import Welcome from './routes/Welcome.tsx';
 import Home from './routes/Home.tsx';
 import {AuthProvider} from "../context/AuthProvider.tsx";
 import {InfoProvider} from "../context/InfoProvider.tsx";
 import {MainLayout} from "../components/layouts/MainLayout.tsx";
-import {SmallCenterLayout} from "../components/layouts/SmallCenterLayout.tsx";
 import Profile from './routes/Profile.tsx';
 import {NotificationRoute} from "../components/middleware/NotificationRoute.tsx";
 import SearchAgents from "./routes/SearchAgents.tsx";
@@ -15,12 +13,14 @@ import SearchAgent from "./routes/SearchAgent.tsx";
 import {QueryIdExists} from "../components/guards/QueryIdExists.tsx";
 import {UserQueriesProvider} from "../context/UserQueriesProvider.tsx";
 import {CategoriesProvider} from "../context/CategoriesProvider.tsx";
-import Help from "./routes/Help.tsx";
+import Help from "./routes/Help.tsx";*/
+import Offline from "./routes/Offline.tsx";
+import {SmallCenterLayout} from "../components/layouts/SmallCenterLayout.tsx";
 
 function App() {
     return (
         <Router>
-            <InfoProvider>
+            {/*<InfoProvider>
                 <AuthProvider>
                     <Routes>
                         <Route element={<SmallCenterLayout/>}>
@@ -52,7 +52,12 @@ function App() {
                         <Route path="*" element={<Navigate to="/" replace/>}/>
                     </Routes>
                 </AuthProvider>
-            </InfoProvider>
+            </InfoProvider>/*/}
+            <Routes>
+                <Route element={<SmallCenterLayout/>}>
+                    <Route path="*" element={<Offline/>}/>
+                </Route>
+            </Routes>
         </Router>
     );
 }
